@@ -1,17 +1,37 @@
+//PARAMETROS DE LA FUNCION NODE
 var stdio = require('stdio');
 var ops = stdio.getopt({
     'port': {key: 'p', args: 1, description: 'Puerto que se va a usar'}
 });
 
+//NODE-MODULES
+
+//Web
 var http = require('http');
 var express = require('express');
 var app = express();
 var server = http.createServer(app).listen(ops.port);
 var bodyParser = require('body-parser');
-var io = require('socket.io')(server);
 //var cors = require('cors');
 
-	//BodyParser
+//Sockets
+var io = require('socket.io')(server);
+
+//Base de datos
+var mysql = require('mysql');
+var con = mysql.createConnection({
+	host: 'localhost',
+	user: '',
+	password: '',
+	database : ''
+});
+	
+	//Database connection
+	con.connect(function(err){
+		if(!err) {console.log("Base de datos conectada.")};    
+	});
+
+	//BodyParser y estilos
 	app.use(bodyParser.urlencoded({ extended: true }));
 	//app.use(cors);
 
@@ -34,11 +54,13 @@ var io = require('socket.io')(server);
 		var tarjeta = req.body.c;
 		var tiempo = req.body.m;
 
-		//GUARDAR EN BASE DE DATOS
+		//GUARDAR EN BASE DE DATOS Y EMITE QUE HUBO LECTURA
+		io.emit('chat message','Se paso una tarjeta con el codigo: ' + req.body.c + ' y los millis():' + req.body.m);
+
 	});
 
 	app.post('/actions/:filename', function(req, res){
-		require('./actions/' + req.params.filename)(this, req, res);
+		//require('./actions/' + req.params.filename)(req, res);
 	});
 	
 	app.options('/actions/:filename', function(req, res){
@@ -54,6 +76,8 @@ var io = require('socket.io')(server);
 		socket.on('disconnect', function(socket){
 			console.log('Se desconecto un usuario');
 		});
+		//
+		//ACA LA IDEA SERIA QUE CARGE LAS LECTURAS A MEDIDAS QUE SE CARGAN EN LA DB
 		socket.on('chat message', function(msg){
 			io.emit('chat message', msg);
 		});
