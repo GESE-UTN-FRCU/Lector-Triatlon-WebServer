@@ -17,16 +17,13 @@ var io = require('socket.io')(server);
 
 //Base de datos
 var pg = require('pg');
-const connectionString = "tcp://postgres:chichilo@localhost/my_db";
+const connectionString = "postgres://postgres:chichilo@localhost:5433/carreras";
 
 const client = new pg.Client(connectionString);
-	
-
 	client.connect();
 
 	//BodyParser y estilos
 	app.use(bodyParser.urlencoded({ extended: true }));
-	//app.use(cors);
 
 	// WebServer Responses
 	app.use(express.static(__dirname + '/app'));
@@ -40,34 +37,51 @@ const client = new pg.Client(connectionString);
 	});
 	
 	app.get('/administrador', function(req, res){
-	   res.sendFile(__dirname + '/views/cliente.html');
+	   res.sendFile(__dirname + '/views/administrador.html');
 	});
 
 	app.post('/tiempo', function(req, res){
+		//GUARDAR EN BASE DE DATOS Y EMITE QUE HUBO UN TIEMPO RECIBIDO.
+		
 		var tiempo = req.body.m;
 
-		//GUARDAR EN BASE DE DATOS Y EMITE QUE HUBO LECTURA
-		io.emit('tiempo','Tiempo del dispositivo en millis():' + req.body.m);
+		const insertTiempo = 'INSERT INTO pedidoTiempo(ip_lector,tiempo_lector) VALUES ($1,$2)';
+		const insertValorTiempo = [req.connection.remoteAddress,tiempo];
+
+		client.query(insertTiempo,insertValorTiempo, (err,res)=>{
+			if (shouldAbort(err)) return
+			client.query('COMMIT', (err) =>{
+				if (err){
+					console.error('Error al realizar la transaccion',err.stack);
+				}
+				done();
+			})
+		});
+
+		io.emit('tiempo','Tiempo del dispositivo en millis():' + tiempo);
 
 	});
 
 	app.post('/lectura', function(req, res){
+		//GUARDAR EN BASE DE DATOS Y EMITE QUE HUBO LECTURA
 		var tarjeta = req.body.c;
 		var tiempo = req.body.m;
 
-		//GUARDAR EN BASE DE DATOS Y EMITE QUE HUBO LECTURA
-		io.emit('lectura','Se paso una tarjeta con el codigo: ' + req.body.c + ' y los millis():' + req.body.m);
+		const insertTiempo = 'INSERT INTO lectura(ip_lector,tiempo_lector,tarjeta_corredor) VALUES ($1,$2,$3)';
+		const insertValorTiempo = [req.connection.remoteAddress,tiempo,tarjeta];
 
-	});
+		client.query(insertTiempo,insertValorTiempo, (err,res)=>{
+			if (shouldAbort(err)) return
+			client.query('COMMIT', (err) =>{
+				if (err){
+					console.error('Error al realizar la transaccion',err.stack);
+				}
+				done();
+			})
+		});
 
-	app.post('/actions/:filename', function(req, res){
-		//require('./actions/' + req.params.filename)(req, res);
-	});
-	
-	app.options('/actions/:filename', function(req, res){
-		res.header("Access-Control-Allow-Origin", "*");
-		res.header("Access-Control-Allow-Headers", "Content-Type,Accept");
-		res.send("OK");
+		io.emit('lectura','Se paso una tarjeta con el codigo: ' + tarjeta + ' y los millis():' + tiempo);
+
 	});
 
 	// Socket Responses
