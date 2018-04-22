@@ -5,31 +5,24 @@ var ops = stdio.getopt({
 });
 
 //NODE-MODULES
-
 //Web
 var http = require('http');
 var express = require('express');
 var app = express();
 var server = http.createServer(app).listen(ops.port);
 var bodyParser = require('body-parser');
-//var cors = require('cors');
 
 //Sockets
 var io = require('socket.io')(server);
 
 //Base de datos
-var mysql = require('mysql');
-var con = mysql.createConnection({
-	host: 'localhost',
-	user: '',
-	password: '',
-	database : ''
-});
+var pg = require('pg');
+const connectionString = "tcp://postgres:chichilo@localhost/my_db";
+
+const client = new pg.Client(connectionString);
 	
-	//Database connection
-	con.connect(function(err){
-		if(!err) {console.log("Base de datos conectada.")};    
-	});
+
+	client.connect();
 
 	//BodyParser y estilos
 	app.use(bodyParser.urlencoded({ extended: true }));
@@ -50,12 +43,20 @@ var con = mysql.createConnection({
 	   res.sendFile(__dirname + '/views/cliente.html');
 	});
 
-	app.post('/actions/:filename', function(req, res){
+	app.post('/tiempo', function(req, res){
+		var tiempo = req.body.m;
+
+		//GUARDAR EN BASE DE DATOS Y EMITE QUE HUBO LECTURA
+		io.emit('tiempo','Tiempo del dispositivo en millis():' + req.body.m);
+
+	});
+
+	app.post('/lectura', function(req, res){
 		var tarjeta = req.body.c;
 		var tiempo = req.body.m;
 
 		//GUARDAR EN BASE DE DATOS Y EMITE QUE HUBO LECTURA
-		io.emit('chat message','Se paso una tarjeta con el codigo: ' + req.body.c + ' y los millis():' + req.body.m);
+		io.emit('lectura','Se paso una tarjeta con el codigo: ' + req.body.c + ' y los millis():' + req.body.m);
 
 	});
 
@@ -78,8 +79,11 @@ var con = mysql.createConnection({
 		});
 		//
 		//ACA LA IDEA SERIA QUE CARGE LAS LECTURAS A MEDIDAS QUE SE CARGAN EN LA DB
-		socket.on('chat message', function(msg){
-			io.emit('chat message', msg);
+		socket.on('lectura', function(msg){
+			io.emit('lectura', msg);
+		});
+		socket.on('tiempo', function(msg){
+			io.emit('tiempo', msg);
 		});
 	});
 
