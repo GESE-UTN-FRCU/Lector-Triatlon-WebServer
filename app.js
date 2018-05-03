@@ -40,44 +40,24 @@ const client = new pg.Client(connectionString);
 	   res.sendFile(__dirname + '/views/administrador.html');
 	});
 
-	app.post('/tiempo', function(req, res){
-		//GUARDAR EN BASE DE DATOS Y EMITE QUE HUBO UN TIEMPO RECIBIDO.
-		
-		var tiempo = req.body.m;
-
-		const insertTiempo = 'INSERT INTO pedidoTiempo(ip_lector,tiempo_lector) VALUES ($1,$2)';
-		const insertValorTiempo = [req.connection.remoteAddress,tiempo];
-
-		client.query(insertTiempo,insertValorTiempo, (err,res)=>{
-			if (shouldAbort(err)) return
-			client.query('COMMIT', (err) =>{
-				if (err){
-					console.error('Error al realizar la transaccion',err.stack);
-				}
-				done();
-			})
-		});
-
-		io.emit('tiempo','Tiempo del dispositivo en millis():' + tiempo);
-
-	});
-
 	app.post('/lectura', function(req, res){
 		//GUARDAR EN BASE DE DATOS Y EMITE QUE HUBO LECTURA
 		var tarjeta = req.body.c;
 		var tiempo = req.body.m;
+		var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+			if (ip.substr(0, 7) == "::ffff:") {
+  				ip = ip.substr(7);
+			}
 		
 		const insertTiempo = 'INSERT INTO lectura(ip_lector,tiempo_lector,tarjeta_corredor) VALUES ($1,$2,$3)';
-		const insertValorTiempo = [req.connection.remoteAddress,tiempo,tarjeta];
+		const insertValorTiempo = [ip,tiempo,tarjeta];
 
 		client.query(insertTiempo,insertValorTiempo, (err,res)=>{
-			if (shouldAbort(err)) return
-			client.query('COMMIT', (err) =>{
-				if (err){
-					console.error('Error al realizar la transaccion',err.stack);
-				}
-				done();
-			})
+			if (err) {
+    			console.log(err.stack)
+  			} else {
+    		console.log(res.rows[0])
+  			}
 		});
 
 		io.emit('lectura','Se paso una tarjeta con el codigo: ' + tarjeta + ' y los millis():' + tiempo);
