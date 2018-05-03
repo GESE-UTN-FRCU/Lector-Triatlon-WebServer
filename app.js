@@ -19,6 +19,8 @@ var io = require('socket.io')(server);
 var pg = require('pg');
 const connectionString = "postgres://postgres:chichilo@localhost:5433/carreras";
 
+const { URL } = require('url');
+
 const client = new pg.Client(connectionString);
 	client.connect();
 
@@ -26,7 +28,7 @@ const client = new pg.Client(connectionString);
 	app.use(bodyParser.urlencoded({ extended: true }));
 
 	// WebServer Responses
-	app.use(express.static(__dirname + '/app'));
+	app.use(express.static(__dirname + '/views'));
 
 	app.get('/', function(req, res){
   		res.sendFile(__dirname + '/views/index.html');
@@ -70,7 +72,20 @@ const client = new pg.Client(connectionString);
 		//ACA SEGUN LA VISTA DEBERIA HACER LAS BUSQUEDAS EN LA BASE DE DATOS.
 
 		socket.on('pedirTiempo', function(msg){
-			sendTimeRequest(msg);
+
+			console.log('Ip del arduino: ' + msg);
+			let arduinoURL = new URL('http://' + msg + '/millis')
+
+			http.get(arduinoURL, (res) => {
+			  console.log("Obtuvo respuesta: " + res.statusCode);
+			    res.on('data', function (chunk) {
+			    	//Aca hay que emitir segun el caso.
+				    console.log('Tiempo del arduino: ' + chunk);
+				  });
+			}).on('error', function(e) {
+			  console.log("Error al enviar " + e.message);
+			});
+
 		});
 
 		socket.on('pedirCarreras', function(socket){
@@ -94,23 +109,6 @@ const client = new pg.Client(connectionString);
 
 
 function sendTimeRequest(ip){
-	http.get({
-		hostname: ip,
-		port: 80,
-		path: '/tiempo',
-		agent: false,
-		method: 'GET'
-	},function(res){
-		res.setEncoding("utf8");
-		let body = '';
-		res.on("data", data => {
-			body += data;
-		});
-
-		res.on("end",()=>{
-
-		});
-	});
 }
 
 server.listen(ops.port, () => console.log('Servidor iniciado en el puerto ' + ops.port + '.'));
