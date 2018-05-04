@@ -17,6 +17,9 @@ var io = require('socket.io')(server);
 
 //Base de datos
 var pg = require('pg');
+
+var permitirLectura = false;
+
 const connectionString = "postgres://postgres:chichilo@localhost:5433/carreras";
 
 const { URL } = require('url');
@@ -43,6 +46,9 @@ const client = new pg.Client(connectionString);
 	});
 
 	app.post('/lectura', function(req, res){
+
+		if (!permitirLectura) return;
+
 		//GUARDAR EN BASE DE DATOS Y EMITE QUE HUBO LECTURA
 		var tarjeta = req.body.c;
 		var tiempo = req.body.m;
@@ -71,6 +77,16 @@ const client = new pg.Client(connectionString);
 		console.log('Se conecto un usuario.');
 		//ACA SEGUN LA VISTA DEBERIA HACER LAS BUSQUEDAS EN LA BASE DE DATOS.
 
+		socket.on('permitirLectura',function(msg) {
+			if (permitirLectura) {
+				permitirLectura = false;
+			}
+			else {
+				permitirLectura = true;
+			};
+
+		});
+
 		socket.on('pedirTiempo', function(msg){
 
 			console.log('Ip del arduino: ' + msg);
@@ -81,6 +97,23 @@ const client = new pg.Client(connectionString);
 			    res.on('data', function (chunk) {
 			    	//Aca hay que emitir segun el caso.
 				    console.log('Tiempo del arduino: ' + chunk);
+				  });
+			}).on('error', function(e) {
+			  console.log("Error al enviar " + e.message);
+			});
+
+		});
+
+		socket.on('pedirLectura', function(msg){
+
+			console.log('Ip del arduino: ' + msg);
+			let arduinoURL = new URL('http://' + msg + '/lectura')
+
+			http.get(arduinoURL, (res) => {
+			  console.log("Obtuvo respuesta: " + res.statusCode);
+			    res.on('data', function (chunk) {
+			    	//Aca hay que emitir segun el caso.
+				    console.log('Ultima lectura del arduino: ' + chunk);
 				  });
 			}).on('error', function(e) {
 			  console.log("Error al enviar " + e.message);
@@ -105,10 +138,5 @@ const client = new pg.Client(connectionString);
 			io.emit('tiempo', msg);
 		});
 	});
-
-
-
-function sendTimeRequest(ip){
-}
 
 server.listen(ops.port, () => console.log('Servidor iniciado en el puerto ' + ops.port + '.'));
