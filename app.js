@@ -40,10 +40,6 @@ const client = new pg.Client(connectionString);
 	app.get('/cliente', function(req, res){
 	   res.sendFile(__dirname + '/views/cliente.html');
 	});
-	
-	app.get('/administrador', function(req, res){
-	   res.sendFile(__dirname + '/views/administrador.html');
-	});
 
 	app.post('/lectura', function(req, res){
 
