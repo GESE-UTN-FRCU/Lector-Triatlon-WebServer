@@ -17,19 +17,21 @@ var io = require('socket.io')(server);
 
 //Base de datos
 var pg = require('pg');
-const connectionString = "tcp://postgres:chichilo@localhost/my_db";
+
+var permitirLectura = false;
+
+const connectionString = "postgres://postgres:chichilo@localhost:5433/carreras";
+
+const { URL } = require('url');
 
 const client = new pg.Client(connectionString);
-	
-
 	client.connect();
 
 	//BodyParser y estilos
 	app.use(bodyParser.urlencoded({ extended: true }));
-	//app.use(cors);
 
 	// WebServer Responses
-	app.use(express.static(__dirname + '/app'));
+	app.use(express.static(__dirname + '/views'));
 
 	app.get('/', function(req, res){
   		res.sendFile(__dirname + '/views/index.html');
@@ -38,36 +40,32 @@ const client = new pg.Client(connectionString);
 	app.get('/cliente', function(req, res){
 	   res.sendFile(__dirname + '/views/cliente.html');
 	});
-	
-	app.get('/administrador', function(req, res){
-	   res.sendFile(__dirname + '/views/cliente.html');
-	});
-
-	app.post('/tiempo', function(req, res){
-		var tiempo = req.body.m;
-
-		//GUARDAR EN BASE DE DATOS Y EMITE QUE HUBO LECTURA
-		io.emit('tiempo','Tiempo del dispositivo en millis():' + req.body.m);
-
-	});
 
 	app.post('/lectura', function(req, res){
+
+		if (!permitirLectura) return;
+
+		//GUARDAR EN BASE DE DATOS Y EMITE QUE HUBO LECTURA
 		var tarjeta = req.body.c;
 		var tiempo = req.body.m;
+		var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+			if (ip.substr(0, 7) == "::ffff:") {
+  				ip = ip.substr(7);
+			}
 		
 		const insertTiempo = 'INSERT INTO lectura(ip_lector,tiempo_lector,tarjeta_corredor) VALUES ($1,$2,$3)';
-		const insertValorTiempo = [req.connection.remoteAddress,tiempo,tarjeta];
+		const insertValorTiempo = [ip,tiempo,tarjeta];
 
-	});
+		client.query(insertTiempo,insertValorTiempo, (err,res)=>{
+			if (err) {
+    			console.log(err.stack)
+  			} else {
+    		console.log(res.rows[0])
+  			}
+		});
 
-	app.post('/actions/:filename', function(req, res){
-		//require('./actions/' + req.params.filename)(req, res);
-	});
-	
-	app.options('/actions/:filename', function(req, res){
-		res.header("Access-Control-Allow-Origin", "*");
-		res.header("Access-Control-Allow-Headers", "Content-Type,Accept");
-		res.send("OK");
+		io.emit('lectura','Se paso una tarjeta con el codigo: ' + tarjeta + ' y los millis():' + tiempo);
+
 	});
 
 	// Socket Responses
@@ -75,8 +73,42 @@ const client = new pg.Client(connectionString);
 		console.log('Se conecto un usuario.');
 		//ACA SEGUN LA VISTA DEBERIA HACER LAS BUSQUEDAS EN LA BASE DE DATOS.
 
+		socket.on('permitirLectura',function(msg) {
+			permitirLectura = !permitirLectura;
+		});
+
 		socket.on('pedirTiempo', function(msg){
-			sendTimeRequest(msg);
+
+			console.log('Ip del arduino: ' + msg);
+			let arduinoURL = new URL('http://' + msg + '/millis')
+
+			http.get(arduinoURL, (res) => {
+			  console.log("Obtuvo respuesta: " + res.statusCode);
+			    res.on('data', function (chunk) {
+			    	//Aca hay que emitir segun el caso.
+				    console.log('Tiempo del arduino: ' + chunk);
+				  });
+			}).on('error', function(e) {
+			  console.log("Error al enviar " + e.message);
+			});
+
+		});
+
+		socket.on('pedirLectura', function(msg){
+
+			console.log('Ip del arduino: ' + msg);
+			let arduinoURL = new URL('http://' + msg + '/lectura')
+
+			http.get(arduinoURL, (res) => {
+			  console.log("Obtuvo respuesta: " + res.statusCode);
+			    res.on('data', function (chunk) {
+			    	//Aca hay que emitir segun el caso.
+				    console.log('Ultima lectura del arduino: ' + chunk);
+				  });
+			}).on('error', function(e) {
+			  console.log("Error al enviar " + e.message);
+			});
+
 		});
 
 		socket.on('pedirCarreras', function(socket){
@@ -96,27 +128,5 @@ const client = new pg.Client(connectionString);
 			io.emit('tiempo', msg);
 		});
 	});
-
-
-
-function sendTimeRequest(ip){
-	http.get({
-		hostname: ip,
-		port: 80,
-		path: '/tiempo',
-		agent: false,
-		method: 'GET'
-	},function(res){
-		res.setEncoding("utf8");
-		let body = '';
-		res.on("data", data => {
-			body += data;
-		});
-
-		res.on("end",()=>{
-
-		});
-	});
-}
 
 server.listen(ops.port, () => console.log('Servidor iniciado en el puerto ' + ops.port + '.'));

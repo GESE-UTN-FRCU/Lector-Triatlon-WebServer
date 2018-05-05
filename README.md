@@ -1,14 +1,15 @@
-# App web del LectorTriatlon
+# WebServer del Lector triatlon
 
-El servidor tiene dos partes:
+El servidor tiene tres partes principales:
 
   - Un servidor web para cargar las vistas.
-  - Un WebSocket para interactuar en tiempo real con el servidor.
+  - Un WebSocket para interactuar en tiempo real con los arduinos.
+  - Una base de datos en Postgresql.
 
 ### ¿Como abrir el servidor?
 
 Ingresar en el terminal:
 ```sh
 cd /carpeta/del/servidor
-node . --port {puerto}
+node app.js -p {puerto}
 ```
