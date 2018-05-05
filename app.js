@@ -68,6 +68,27 @@ const client = new pg.Client(connectionString);
 
 	});
 
+	app.post('/carrera', function(req, res){
+
+		var nombre = req.body.nombre;
+		var fecha = req.body.fecha;
+		var horaInicio = req.body.horaInicio;
+		var horaFin = req.body.horaFin;
+		var tiempoInicioArduino = req.body.tiempoInicioArduino;
+		var tiempoFinArduino = req.body.tiempoFinArduino;
+		
+		const insertCarrera = 'INSERT INTO carrera(nombre,fecha,horaInicio,horaFin,tiempoInicioArduino,tiempoFinArduino) VALUES ($1,$2,$3,$4,$5,$6)';
+		const insertValorCarrera = [nombre,fecha,horaInicio,horaFin,tiempoInicioArduino,tiempoFinArduino];
+
+		client.query(insertCarrera,insertValorCarrera, (err,res)=>{
+			if (err) {
+    			console.log(err.stack)
+  			} else {
+    		console.log(res.rows[0])
+  			}
+		});
+	});
+
 	// Socket Responses
 	io.on('connection', function(socket){
 		console.log('Se conecto un usuario.');
@@ -77,6 +98,7 @@ const client = new pg.Client(connectionString);
 			permitirLectura = !permitirLectura;
 		});
 
+		// COMUNICACION CON EL ARDUINO.
 		socket.on('pedirTiempo', function(msg){
 
 			console.log('Ip del arduino: ' + msg);
@@ -111,6 +133,25 @@ const client = new pg.Client(connectionString);
 
 		});
 
+		socket.on('modoEnvioDatos', function(msg){
+
+			console.log('Ip del arduino: ' + msg);
+			let arduinoURL = new URL('http://' + msg + '/modoenviodato')
+
+			http.get(arduinoURL, (res) => {
+			  console.log("Obtuvo respuesta: " + res.statusCode);
+			    res.on('data', function (chunk) {
+			    	//Aca hay que emitir segun el caso.
+				    console.log('Modo envio de datos: ' + chunk);
+				  });
+			}).on('error', function(e) {
+			  console.log("Error al enviar " + e.message);
+			});
+
+		});
+
+
+		// 
 		socket.on('pedirCarreras', function(socket){
 
 		});
