@@ -74,13 +74,7 @@ const client = new pg.Client(connectionString);
 		//ACA SEGUN LA VISTA DEBERIA HACER LAS BUSQUEDAS EN LA BASE DE DATOS.
 
 		socket.on('permitirLectura',function(msg) {
-			if (permitirLectura) {
-				permitirLectura = false;
-			}
-			else {
-				permitirLectura = true;
-			};
-
+			permitirLectura = !permitirLectura;
 		});
 
 		socket.on('pedirTiempo', function(msg){
