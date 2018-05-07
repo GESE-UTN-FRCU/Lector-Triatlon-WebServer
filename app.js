@@ -18,7 +18,7 @@ var io = require('socket.io')(server);
 //Base de datos
 var pg = require('pg');
 
-var permitirLectura = false;
+var permitirLectura = true;
 
 const connectionString = "postgres://postgres:chichilo@localhost:5433/carreras";
 
@@ -94,7 +94,7 @@ const client = new pg.Client(connectionString);
 		console.log('Se conecto un usuario.');
 		//ACA SEGUN LA VISTA DEBERIA HACER LAS BUSQUEDAS EN LA BASE DE DATOS.
 
-		socket.on('permitirLectura',function(msg) {
+		socket.on('cambiarModoLectura',function(msg) {
 			permitirLectura = !permitirLectura;
 		});
 
