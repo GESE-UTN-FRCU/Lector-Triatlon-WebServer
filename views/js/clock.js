@@ -16,6 +16,7 @@ function start() {
 
     started = setInterval(clockRunning, 10);
 
+    socket.emit('cambiarModoLectura',''); 
     socket.emit('pedirTiempo','192.168.8.152');	
 }
 
