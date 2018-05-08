@@ -51,6 +51,7 @@ const client = new pg.Client(connectionString);
 		var codigo = req.body.c;
 		var tiempo = req.body.m;
 		var inscripcion;
+		var corredor;
 
 		// var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 		// 	if (ip.substr(0, 7) == "::ffff:") {
@@ -68,18 +69,26 @@ const client = new pg.Client(connectionString);
 	    	result.rows = result.rows.map(row => Object.assign({}, row));
 	    	inscripcion = result.rows[0];
 
-	    	
-	    	const insertLectura = 'INSERT INTO lectura(idCarrera,idCorredor,tiempoarduino,codigo) VALUES ($1,$2,$3,$4)';
-			const insertValorLectura = [inscripcion.idcarrera,inscripcion.idcorredor,tiempo,codigo];
+	    	client.query('SELECT c.nombre,c.apellido FROM corredor c WHERE c.id = 1',
+	    		function(err,result){
+	    		if(err) {
+	      			return console.error('error running query', err);
+	    		}
+	    		result.rows = result.rows.map(row => Object.assign({}, row));
+	    		corredor = result.rows[0];
 
-			client.query(insertLectura,insertValorLectura, (err,result)=>{
-				if (err) {
-	  				console.log(err.stack)
-	  			} else {
-	   		  		console.log("Lectura confirmada.");
-	   		  		io.emit("lectura",[inscripcion.idcorredor,tiempo,codigo])
-					res.sendStatus(200);
-	  			}
+	    		const insertLectura = 'INSERT INTO lectura(idCarrera,idCorredor,tiempoarduino,codigo) VALUES ($1,$2,$3,$4)';
+				const insertValorLectura = [inscripcion.idcarrera,inscripcion.idcorredor,tiempo,codigo];
+
+				client.query(insertLectura,insertValorLectura, (err,result)=>{
+					if (err) {
+		  				console.log(err.stack)
+		  			} else {
+		   		  		console.log("Lectura confirmada.");
+		   		  		io.emit("lectura",[tiempo,corredor.nombre+ " " +corredor.apellido])
+						res.sendStatus(200);
+		  			}
+				});
 		});
     }); 
 
