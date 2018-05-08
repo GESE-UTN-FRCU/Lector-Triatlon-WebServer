@@ -27,6 +27,8 @@ const { URL } = require('url');
 const client = new pg.Client(connectionString);
 	client.connect();
 
+var queryNotify = client.query('LISTEN addedrecord');
+
 	//BodyParser y estilos
 	app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -48,7 +50,7 @@ const client = new pg.Client(connectionString);
 		//GUARDAR EN BASE DE DATOS Y EMITE QUE HUBO LECTURA
 		var codigo = req.body.c;
 		var tiempo = req.body.m;
-		var inscripcion = [];
+		var inscripcion;
 
 		// var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 		// 	if (ip.substr(0, 7) == "::ffff:") {
@@ -64,7 +66,6 @@ const client = new pg.Client(connectionString);
 	      		return console.error('error running query', err);
 	    	}
 	    	result.rows = result.rows.map(row => Object.assign({}, row));
-	    	console.log(result.rows[0]);
 	    	inscripcion = result.rows[0];
 
 	    	
@@ -112,6 +113,12 @@ const client = new pg.Client(connectionString);
 	io.on('connection', function(socket){
 		console.log('Se conecto un usuario.');
 		//ACA SEGUN LA VISTA DEBERIA HACER LAS BUSQUEDAS EN LA BASE DE DATOS.
+
+		socket.on('listoData', function (data) {
+        	pg_client.on('notification', function(lectura) {
+            	socket.emit('lecturas', lectura);
+        	});
+        });
 
 		socket.on('cambiarModoLectura',function(msg) {
 			permitirLectura = !permitirLectura;
