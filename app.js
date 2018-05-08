@@ -76,7 +76,8 @@ var queryNotify = client.query('LISTEN addedrecord');
 				if (err) {
 	  				console.log(err.stack)
 	  			} else {
-	   		  		console.log("Lectura confirmada.")
+	   		  		console.log("Lectura confirmada.");
+	   		  		io.emit("lectura",[inscripcion.idcorredor,tiempo,codigo])
 					res.sendStatus(200);
 	  			}
 	  			client.end();
@@ -115,7 +116,7 @@ var queryNotify = client.query('LISTEN addedrecord');
 		//ACA SEGUN LA VISTA DEBERIA HACER LAS BUSQUEDAS EN LA BASE DE DATOS.
 
 		socket.on('listoData', function (data) {
-        	pg_client.on('notification', function(lectura) {
+        	client.on('notification', function(lectura) {
             	socket.emit('lecturas', lectura);
         	});
         });
@@ -188,9 +189,9 @@ var queryNotify = client.query('LISTEN addedrecord');
 		//
 		//ACA LA IDEA SERIA QUE CARGE LAS LECTURAS A MEDIDAS QUE SE CARGAN EN LA DB.
 		//ESTO ESTA MAL.
-		socket.on('lectura', function(msg){
-			io.emit('lectura', msg);
-		});
+		// socket.on('lectura', function(msg){
+		// 	io.emit('lectura', msg);
+		// });
 		socket.on('tiempo', function(msg){
 			io.emit('tiempo', msg);
 		});
