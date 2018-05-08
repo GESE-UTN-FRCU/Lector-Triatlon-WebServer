@@ -46,25 +46,44 @@ const client = new pg.Client(connectionString);
 		if (!permitirLectura) return;
 
 		//GUARDAR EN BASE DE DATOS Y EMITE QUE HUBO LECTURA
-		var tarjeta = req.body.c;
+		var codigo = req.body.c;
 		var tiempo = req.body.m;
-		var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-			if (ip.substr(0, 7) == "::ffff:") {
-  				ip = ip.substr(7);
-			}
-		
-		const insertTiempo = 'INSERT INTO lectura(ip_lector,tiempo_lector,tarjeta_corredor) VALUES ($1,$2,$3)';
-		const insertValorTiempo = [ip,tiempo,tarjeta];
+		var inscripcion = [];
 
-		client.query(insertTiempo,insertValorTiempo, (err,res)=>{
-			if (err) {
-    			console.log(err.stack)
-  			} else {
-    		console.log(res.rows[0])
-  			}
+		// var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+		// 	if (ip.substr(0, 7) == "::ffff:") {
+  // 				ip = ip.substr(7);
+		// 	}
+
+		const selectInscripcion = 'SELECT * FROM inscripcion WHERE codigo = 3200000 AND activa = true'
+		//const selectValor = [codigo];
+
+		//selectValor
+		client.query(selectInscripcion, function(err, result) {
+	    	if(err) {
+	      		return console.error('error running query', err);
+	    	}
+	    	result.rows = result.rows.map(row => Object.assign({}, row));
+	    	console.log(result.rows[0]);
+	    	inscripcion = result.rows[0];
+
+	    	
+	    	const insertLectura = 'INSERT INTO lectura(idCarrera,idCorredor,tiempoarduino,codigo) VALUES ($1,$2,$3,$4)';
+			const insertValorLectura = [inscripcion.idcarrera,inscripcion.idcorredor,tiempo,codigo];
+
+			client.query(insertLectura,insertValorLectura, (err,result)=>{
+				if (err) {
+	  				console.log(err.stack)
+	  			} else {
+	   		  		console.log("Lectura confirmada.")
+					res.sendStatus(200);
+	  			}
+	  			client.end();
 		});
+    }); 
 
-		io.emit('lectura','Se paso una tarjeta con el codigo: ' + tarjeta + ' y los millis():' + tiempo);
+
+		
 
 	});
 
@@ -80,11 +99,11 @@ const client = new pg.Client(connectionString);
 		const insertCarrera = 'INSERT INTO carrera(nombre,fecha,horaInicio,horaFin,tiempoInicioArduino,tiempoFinArduino) VALUES ($1,$2,$3,$4,$5,$6)';
 		const insertValorCarrera = [nombre,fecha,horaInicio,horaFin,tiempoInicioArduino,tiempoFinArduino];
 
-		client.query(insertCarrera,insertValorCarrera, (err,res)=>{
+		client.query(insertCarrera,insertValorCarrera, (err,result)=>{
 			if (err) {
     			console.log(err.stack)
   			} else {
-    		console.log(res.rows[0])
+    		console.log(result.rows[0])
   			}
 		});
 	});
