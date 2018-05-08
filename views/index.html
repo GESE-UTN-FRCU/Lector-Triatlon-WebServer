@@ -250,22 +250,15 @@
 	  //   });
 	  // });
 
-      $(function () {
-      var socket = io();
+      jQuery(function ($) {
+      var socket = io.connect();
       var $lecturas = $('#lecturas');
-
-      //socket.emit('listoData');
-
       socket.on('lecturas', function (data) {
           var lecturas = '';
           for (i = 0; i < data.length; i++) {
               lecturas += data[i]
           if(lecturas){
-          $lecturas.append('<tr>\
-                              <td>' + lecturas[0] + '</td>\
-                              <td>' + lecturas[1] + '</td>\ 
-                              <td>' + lecturas[2] + '</td>\
-                          </tr>');
+          $lecturas.append('<tr><td>' + lecturas[0] + '</td><td>' + lecturas[1] + '</td><td>' + lecturas[2] + '</td></tr>');
           }
           else{
               $lecturas.append('No ha terminado ningún corredor.');
