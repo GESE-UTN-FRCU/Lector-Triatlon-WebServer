@@ -115,7 +115,7 @@ var queryNotify = client.query('LISTEN addedrecord');
 		//ACA SEGUN LA VISTA DEBERIA HACER LAS BUSQUEDAS EN LA BASE DE DATOS.
 
 		socket.on('listoData', function (data) {
-        	pg_client.on('notification', function(lectura) {
+        	client.on('notification', function(lectura) {
             	socket.emit('lecturas', lectura);
         	});
         });

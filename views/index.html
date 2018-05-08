@@ -250,9 +250,14 @@
 	  //   });
 	  // });
 
-      jQuery(function ($) {
+      $(function () {
       var socket = io.connect();
       var $lecturas = $('#lecturas');
+      
+      socket.on('connected', function (data) {
+        socket.emit('listoData', {});
+      });
+
       socket.on('lecturas', function (data) {
           var lecturas = '';
           for (i = 0; i < data.length; i++) {
