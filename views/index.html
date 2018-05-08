@@ -259,18 +259,7 @@
       });
 
       socket.on('lectura', function (data) {
-          var lecturas = '';
-          for (i = 0; i < data.length; i++) {
-              lecturas += data[i]
-          if(lecturas){
-          $lecturas.append('<tr><td>' + lecturas[0] + '</td><td>' + lecturas[1] + '</td><td>' + lecturas[2] + '</td></tr>');
-          }
-          else{
-              $lecturas.append('No ha terminado ningún corredor.');
-          }
-            lecturas = '';
-          }
-
+          $lecturas.append('<tr><td>' + data[0] + '</td><td>' + data[1] + '</td><td>' + data[2] + '</td></tr>');
       });
   });
 	</script>

@@ -27,7 +27,7 @@ const { URL } = require('url');
 const client = new pg.Client(connectionString);
 	client.connect();
 
-var queryNotify = client.query('LISTEN addedrecord');
+//var queryNotify = client.query('LISTEN addedrecord');
 
 	//BodyParser y estilos
 	app.use(bodyParser.urlencoded({ extended: true }));
@@ -80,7 +80,6 @@ var queryNotify = client.query('LISTEN addedrecord');
 	   		  		io.emit("lectura",[inscripcion.idcorredor,tiempo,codigo])
 					res.sendStatus(200);
 	  			}
-	  			client.end();
 		});
     }); 
 
@@ -115,11 +114,11 @@ var queryNotify = client.query('LISTEN addedrecord');
 		console.log('Se conecto un usuario.');
 		//ACA SEGUN LA VISTA DEBERIA HACER LAS BUSQUEDAS EN LA BASE DE DATOS.
 
-		socket.on('listoData', function (data) {
-        	client.on('notification', function(lectura) {
-            	socket.emit('lecturas', lectura);
-        	});
-        });
+		// socket.on('listoData', function (data) {
+  //       	client.on('notification', function(lectura) {
+  //           	socket.emit('lecturas', lectura);
+  //       	});
+  //       });
 
 		socket.on('cambiarModoLectura',function(msg) {
 			permitirLectura = !permitirLectura;
