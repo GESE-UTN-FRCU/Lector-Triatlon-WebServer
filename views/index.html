@@ -303,9 +303,13 @@
 
     $(function(){
       $('#formAgregarCarrera').on('submit', function(e){
-        e.preventDefault();
-        $.post('http://localhost:3000/agregarcarrera';
         $('#modalCarrera').modal('hide');
+        e.preventDefault();
+        $.post('http://localhost:3000/agregarcarrera', 
+           $('#formAgregarCarrera').serialize(), 
+           function(data, status, xhr){
+             
+           });
       });
     });
 
