@@ -205,7 +205,7 @@ const client = new pg.Client(connectionString);
 		// 
 		socket.on('pedirLecturas', function(socket){
 
-			const selectLecturas = 'SELECT * lectura WHERE activa = true'
+			const selectLecturas = 'SELECT * FROM lectura'
 
 			client.query(selectLecturas, (err,result)=>{
 				if (err) {
