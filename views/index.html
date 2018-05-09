@@ -244,6 +244,8 @@
 	  //     $('#messages').append($('<li>').text(msg));
 	  //   });
 	  // });
+      var puesto = 1;
+      
       $(function () {
       var socket = io.connect();
       var $lecturas = $('#lecturas');
@@ -267,8 +269,8 @@
         // }
         //   jlectura[puesto] = {"puesto": puesto ; "tiempo": data[0]; "nombre": data[1]};
         //   localStorage.setItem('carrera', JSON.stringify(jlectura));
-          
-          $lecturas.append('<tr><td>' + data[0] + '</td><td>' + data[1] + '</td><td>' + data[2] + '</td></tr>');
+          $lecturas.append('<tr><td>' + puesto + '</td><td>' + data[0] + '</td><td>' + data[1] + '</td></tr>');
+          puesto++;
       });
   });
 	</script>
