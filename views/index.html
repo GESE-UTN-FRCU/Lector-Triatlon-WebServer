@@ -253,13 +253,19 @@
 	  //     $('#messages').append($('<li>').text(msg));
 	  //   });
 	  // });
-      var puesto = 1;
       $(function () {
       var socket = io.connect();
       var $lecturas = $('#lecturas');
       
       socket.on('connected', function (data) {
-        socket.emit('listoData', {});
+        socket.emit('pedirLecturas',{});
+      });
+
+      socket.on('lecturas',function (data){
+        console.log(data);
+        // for (var i = data.length - 1; i >= 0; i--) {
+        //   data[i]
+        // }
       });
 
       socket.on('lectura', function (data) {

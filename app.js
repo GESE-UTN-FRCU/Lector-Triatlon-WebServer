@@ -129,7 +129,7 @@ const client = new pg.Client(connectionString);
 			if (err) {
     			console.log(err.stack)
   			} else {
-    		console.log(result.rows[0])
+    			console.log(result.rows[0])
   			}
 		});
 	});
@@ -137,7 +137,6 @@ const client = new pg.Client(connectionString);
 	// Socket Responses
 	io.on('connection', function(socket){
 		console.log('Se conecto un usuario.');
-		//ACA SEGUN LA VISTA DEBERIA HACER LAS BUSQUEDAS EN LA BASE DE DATOS.
 
 		// socket.on('listoData', function (data) {
   //       	client.on('notification', function(lectura) {
@@ -202,9 +201,18 @@ const client = new pg.Client(connectionString);
 		});
 
 
-		// 
-		socket.on('pedirCarreras', function(socket){
+		// Comunicacion con la DB
+		socket.on('pedirLecturas', function(socket){
+			const selectLecturas = 'SELECT * FROM lectura';
 
+			client.query(selectLecturas, (err,result)=>{
+				if (err) {
+	    			console.log(err.stack);
+	  			} else {
+					result.rows = result.rows.map(row => Object.assign({}, row));
+					io.emit('lecturas',result.rows);
+	  			}
+			});
 		});
 
 		socket.on('disconnect', function(socket){
