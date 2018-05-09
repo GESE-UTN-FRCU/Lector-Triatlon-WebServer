@@ -282,7 +282,7 @@
     $(function(){
       $('#formInscripcion').on('submit', function(e){
         e.preventDefault();
-        $.post('http://localhost/inscripcion', 
+        $.post('http://localhost:3000/inscripcion', 
            $('#formInscripcion').serialize(), 
            function(data, status, xhr){
              // do something here with response;
@@ -293,7 +293,7 @@
     $(function(){
       $('#formLeerTarjetaInscripcion').on('submit', function(e){
         e.preventDefault();
-        $.post('http://localhost/codigoInscripcion', 
+        $.post('http://localhost:3000/codigoInscripcion', 
            $('#formLeerTarjetaInscripcion').serialize(), 
            function(data, status, xhr){
              // do something here with response;
@@ -304,7 +304,7 @@
     $(function(){
       $('#formAgregarCarrera').on('submit', function(e){
         e.preventDefault();
-        $.post('http://localhost/agregarCarreras', 
+        $.post('http://localhost:3000/agregarcarrera', 
            $('#formAgregarCarrera').serialize(), 
            function(data, status, xhr){
              // do something here with response;

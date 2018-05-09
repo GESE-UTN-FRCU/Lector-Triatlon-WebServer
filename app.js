@@ -106,14 +106,12 @@ const client = new pg.Client(connectionString);
 		    		}
 				});
 			}
-   }); 
-
-
-		
-
+   		}); 
 	});
 
 	app.post('/agregarcarrera', function(req, res){
+
+		console.log("Agregando carrera.");
 
 		var nombre = req.body.nombre;
 		var fecha = req.body.fecha;
