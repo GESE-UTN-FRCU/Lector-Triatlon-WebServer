@@ -67,40 +67,46 @@ const client = new pg.Client(connectionString);
 	    	if(err) {
 	      		return console.error('error running query', err);
 	    	}
-	    	result.rows = result.rows.map(row => Object.assign({}, row));
-	    	inscripcion = result.rows[0];
+	    	else{
+		    	result.rows = result.rows.map(row => Object.assign({}, row));
+		    	inscripcion = result.rows[0];
 
-	    	client.query('SELECT c.nombre,c.apellido FROM corredor c WHERE c.id = 1',
-	    		function(err,result){
-	    		if(err) {
-	      			return console.error('error running query', err);
-	    		}
-	    		result.rows = result.rows.map(row => Object.assign({}, row));
-	    		corredor = result.rows[0];
-
-	    		client.query('SELECT c.tiempoinicioarduino FROM carrera c where c.id = 1',
-	    			function(err,result){
+		    	client.query('SELECT c.nombre,c.apellido FROM corredor c WHERE c.id = 1',
+		    		function(err,result){
 		    		if(err) {
 		      			return console.error('error running query', err);
 		    		}
-		    		result.rows = result.rows.map(row => Object.assign({}, row));
-		    		carrera = result.rows[0];
+		    		else{
+		    			result.rows = result.rows.map(row => Object.assign({}, row));
+		    			corredor = result.rows[0];
 
-			    	const insertLectura = 'INSERT INTO lectura(idCarrera,idCorredor,tiempoarduino,codigo) VALUES ($1,$2,$3,$4)';
-					const insertValorLectura = [inscripcion.idcarrera,inscripcion.idcorredor,tiempo,codigo];
+			    		client.query('SELECT c.tiempoinicioarduino FROM carrera c where c.id = 1',
+			    			function(err,result){
+				    		if(err) {
+				      			return console.error('error running query', err);
+				    		}
+				    		else{
+					    		result.rows = result.rows.map(row => Object.assign({}, row));
+					    		carrera = result.rows[0];
 
-					client.query(insertLectura,insertValorLectura, (err,result)=>{
-						if (err) {
-			  				console.log(err.stack)
-			  			} else {
-			   		  		console.log("Lectura confirmada.");
-			   		  		io.emit("lectura",[tiempo-carrera.tiempoinicioarduino,corredor.nombre+ " " +corredor.apellido])
-							res.sendStatus(200);
-			  			}
-					});
-	    		});
-		});
-    }); 
+						    	const insertLectura = 'INSERT INTO lectura(idCarrera,idCorredor,tiempoarduino,codigo) VALUES ($1,$2,$3,$4)';
+								const insertValorLectura = [inscripcion.idcarrera,inscripcion.idcorredor,tiempo,codigo];
+
+								client.query(insertLectura,insertValorLectura, (err,result)=>{
+									if (err) {
+						  				console.log(err.stack)
+						  			} else {
+						   		  		console.log("Lectura confirmada.");
+						   		  		io.emit("lectura",[tiempo-carrera.tiempoinicioarduino,corredor.nombre+ " " +corredor.apellido])
+										res.sendStatus(200);
+						  			}
+								});
+				    		}
+	    				});
+		    		}
+				});
+			}
+   }); 
 
 
 		
