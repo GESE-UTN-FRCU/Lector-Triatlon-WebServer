@@ -129,7 +129,7 @@ const client = new pg.Client(connectionString);
 			if (err) {
     			console.log(err.stack)
   			} else {
-    		console.log(result.rows[0])
+    			console.log(result.rows[0])
   			}
 		});
 	});
@@ -203,7 +203,19 @@ const client = new pg.Client(connectionString);
 
 
 		// 
-		socket.on('pedirCarreras', function(socket){
+		socket.on('pedirLecturas', function(socket){
+
+			const selectLecturas = 'SELECT * lectura WHERE activa = true'
+
+			client.query(selectLecturas, (err,result)=>{
+				if (err) {
+	    			console.log(err.stack);
+	  			} else {
+					result.rows = result.rows.map(row => Object.assign({}, row));
+					socket.emit('lecturas',result.rows);
+	  			}
+			});
+
 
 		});
 
