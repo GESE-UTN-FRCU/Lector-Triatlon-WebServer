@@ -82,77 +82,81 @@
       
       <!-- Modal agregar carrera -->
       <div id="modalCarrera" class="modal" style="width: 75% !important ; height: 75% !important ;">
-        <div class="modal-content">
-          <h4>Agregar carrera</h4>
-          <div class="row">
-            <div class="input-field col s6">
-              <input id="name" type="text" class="validate">
-              <label class="active" for="name">Nombre</label>
-            </div>
-            <div class="input-field col s6">
-              <input id="date" type="text" class="datepicker">
-              <label class="active" for="date">Fecha</label>
-            </div>
-            <div class="input-field col s6">
-              <select>
-                <option value="1">Damas +15</option>
-                <option value="2">Damas +21</option>
-                <option value="3">Damas +25</option>
-                <option value="3">Damas +30</option>
-              </select>
-              <label>Categorías</label>
+        <form id="formAgregarCarrera" method="post">
+          <div class="modal-content">
+            <h4>Agregar carrera</h4>
+            <div class="row">
+              <div class="input-field col s6">
+                <input id="name" type="text" name="nombre" class="validate">
+                <label class="active">Nombre</label>
+              </div>
+              <div class="input-field col s6">
+                <input id="date" type="text" name="fecha" class="datepicker">
+                <label class="active">Fecha</label>
+              </div>
+              <div class="input-field col s6">
+                <select name="categoria">
+                  <option value="1">Damas +15</option>
+                  <option value="2">Damas +21</option>
+                  <option value="3">Damas +25</option>
+                  <option value="3">Damas +30</option>
+                </select>
+                <label>Categorías</label>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <a href="" class="waves-effect waves-green btn-flat">Agregar</a>
-          <a href="" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
-        </div>
+          <div class="modal-footer">
+            <a href="" class="waves-effect waves-green btn-flat" type="submit">Agregar</a>
+            <a href="" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+          </div>
+        </form>
       </div>
 
       <!-- Modal inscribir corredor a carrera -->
 
       <div id="modalInscripcion" class="modal" style="width: 75% !important ; height: 75% !important ;">
-        <div class="modal-content">
-          <h4>Inscripción</h4>
-          <div class="row">
-            <div class="input-field col s6">
-              <select>
-                <option value="1">Sabado 20 abril</option>
-                <option value="2">Sabado 2 mayo</option>
-                <option value="3">Sabado 9 junio</option>
-                <option value="3">Sabado 20 septiembre</option>
-              </select>
-              <label>Carrera</label>
+        <form id="formInscripcion" method="post">
+          <div class="modal-content">
+            <h4>Inscripción</h4>
+            <div class="row">
+                  <div class="input-field col s6">
+                    <select>
+                      <option value="1">Sabado 20 abril</option>
+                      <option value="2">Sabado 2 mayo</option>
+                      <option value="3">Sabado 9 junio</option>
+                      <option value="3">Sabado 20 septiembre</option>
+                    </select>
+                    <label>Carrera</label>
+                  </div>
+                  <div class="input-field col s6">
+                    <select multiple>
+                      <option value="1">Carlos</option>
+                      <option value="2">Pepe</option>
+                      <option value="3">Martin</option>
+                      <option value="3">Julia</option>
+                    </select>
+                    <label>Corredor</label>
+                  </div>
+                  <div class="input-field col s6">
+                    <select>
+                      <option value="1">Lector 1</option>
+                      <option value="2">Lector 1</option>
+                      <option value="3">Lector 3</option>
+                    </select>
+                    <label>Lector</label>
+                  </div>
+            <form id="formLeerTarjetaInscripcion" method="post">
+              <button class="btn waves-effect waves-light" type="submit" name="action">Ultima lectura
+                <i class="material-icons right">send</i>
+              </button>
+            </form>
             </div>
-            <div class="input-field col s6">
-              <select multiple>
-                <option value="1">Carlos</option>
-                <option value="2">Pepe</option>
-                <option value="3">Martin</option>
-                <option value="3">Julia</option>
-              </select>
-              <label>Corredor</label>
-            </div>
-            <div class="input-field col s6">
-              <select>
-                <option value="1">Lector 1</option>
-                <option value="2">Lector 1</option>
-                <option value="3">Lector 3</option>
-              </select>
-              <label>Lector</label>
-            </div>
-
-            <button class="btn waves-effect waves-light" type="submit" name="action">Ultima lectura
-              <i class="material-icons right">send</i>
-            </button>
-        
           </div>
-        </div>
-        <div class="modal-footer">
-          <a href="" class="waves-effect waves-green btn-flat">Agregar</a>
-          <a href="" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
-        </div>
+          <div class="modal-footer">
+            <a href="" class="waves-effect waves-green btn-flat" type="submit">Agregar</a>
+            <a href="" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+          </div>
+        </form>  
       </div>
 
       <!-- Modal agregar corredor -->
@@ -259,18 +263,57 @@
       });
 
       socket.on('lectura', function (data) {
-        if(localStorage.getItem('carrera')){
-          var jlectura = JSON.parse(localStorage.getItem('carrera'));
-        }else{
-          var jlectura = {};
-        }
-          jlectura[puesto] = {"puesto": puesto ; "tiempo": data[0]; "nombre": data[1]};
-          localStorage.setItem('carrera', JSON.stringify(jlectura));
+        // if(localStorage.getItem('carrera')){
+        //   var jlectura = JSON.parse(localStorage.getItem('carrera'));
+        // }else{
+        //   var jlectura = {};
+        // }
+        //   jlectura[puesto] = {"puesto": puesto ; "tiempo": data[0]; "nombre": data[1]};
+        //   localStorage.setItem('carrera', JSON.stringify(jlectura));
           
           $lecturas.append('<tr><td>' + data[0] + '</td><td>' + data[1] + '</td><td>' + data[2] + '</td></tr>');
       });
   });
 	</script>
+
+  <!-- Forms -->
+
+  <script type="text/javascript">
+    
+    $(function(){
+      $('#formInscripcion').on('submit', function(e){
+        e.preventDefault();
+        $.post('http://localhost/inscripcion', 
+           $('#formInscripcion').serialize(), 
+           function(data, status, xhr){
+             // do something here with response;
+           });
+      });
+    });
+
+    $(function(){
+      $('#formLeerTarjetaInscripcion').on('submit', function(e){
+        e.preventDefault();
+        $.post('http://localhost/codigoInscripcion', 
+           $('#formLeerTarjetaInscripcion').serialize(), 
+           function(data, status, xhr){
+             // do something here with response;
+           });
+      });
+    });
+
+    $(function(){
+      $('#formAgregarCarrera').on('submit', function(e){
+        e.preventDefault();
+        $.post('http://localhost/agregarCarreras', 
+           $('#formAgregarCarrera').serialize(), 
+           function(data, status, xhr){
+             // do something here with response;
+           });
+      });
+    });
+
+  </script>
 
   <script type="text/javascript">
       var instance = M.Tabs.init();
