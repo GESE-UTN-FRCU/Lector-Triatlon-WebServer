@@ -140,6 +140,10 @@ const client = new pg.Client(connectionString);
   //       	});
   //       });
 
+  		socket.emit('conectado',function(msg){
+
+  		});
+
 		socket.on('cambiarModoLectura',function(msg) {
 			permitirLectura = !permitirLectura;
 		});
