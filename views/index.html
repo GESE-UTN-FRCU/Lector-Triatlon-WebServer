@@ -259,10 +259,10 @@
       });
 
       socket.on('lecturas',function (data){
-        console.log(data);
-        // for (var i = data.length - 1; i >= 0; i--) {
-        //   data[i]
-        // }
+        for (var i = data.length - 1; i >= 0; i--) {
+          $lecturas.append('<tr><td>' + puesto + '</td><td>' + data[i].tiempoarduino + '</td><td>' + data[i].codigo + '</td></tr>');
+          puesto++;
+        }
       });
 
       socket.on('lectura', function (data) {
