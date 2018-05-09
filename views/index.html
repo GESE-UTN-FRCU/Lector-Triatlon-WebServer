@@ -249,24 +249,29 @@
 	  //     $('#messages').append($('<li>').text(msg));
 	  //   });
 	  // });
-      var puesto = 1;
       $(function () {
       var socket = io.connect();
       var $lecturas = $('#lecturas');
       
       socket.on('connected', function (data) {
-        socket.emit('listoData', {});
+        socket.emit('pedirLecturas',{});
+      });
+
+      socket.on('lecturas',function (data){
+        console.log(data);
+        // for (var i = data.length - 1; i >= 0; i--) {
+        //   data[i]
+        // }
       });
 
       socket.on('lectura', function (data) {
-        if(localStorage.getItem('carrera')){
-          var jlectura = JSON.parse(localStorage.getItem('carrera'));
-        }else{
-          var jlectura = {};
-        }
-          jlectura[puesto] = {"puesto": puesto ; "tiempo": data[0]; "nombre": data[1]};
-          localStorage.setItem('carrera', JSON.stringify(jlectura));
-          
+        // if(localStorage.getItem('carrera')){
+        //   var jlectura = JSON.parse(localStorage.getItem('carrera'));
+        // }else{
+        //   var jlectura = {};
+        // }
+        //   jlectura[puesto] = {"puesto": puesto ; "tiempo": data[0]; "nombre": data[1]};
+        //   localStorage.setItem('carrera', JSON.stringify(jlectura));
           $lecturas.append('<tr><td>' + data[0] + '</td><td>' + data[1] + '</td><td>' + data[2] + '</td></tr>');
       });
   });
