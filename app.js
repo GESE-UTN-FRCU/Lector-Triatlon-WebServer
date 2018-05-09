@@ -205,6 +205,7 @@ const client = new pg.Client(connectionString);
 			var tiempocarrera;
 			var corredores;
 			var lecturas;
+			var arrayLecturas = [];
 
 			const selectLecturas = 'SELECT * FROM lectura l WHERE l.idcarrera = 1';
 
@@ -215,7 +216,7 @@ const client = new pg.Client(connectionString);
 					result.rows = result.rows.map(row => Object.assign({}, row));
 					lecturas = result.rows;
 
-					const selectTiempocarrera  = 'SELECT FROM carrera c WHERE c.id = 1';
+					const selectTiempoCarrera  = 'SELECT c.tiempoinicioarduino FROM carrera c WHERE c.id = 1';
 
 					client.query(selectTiempoCarrera, (err,result)=>{
 						if (err) {
@@ -223,8 +224,30 @@ const client = new pg.Client(connectionString);
 	  					} else {
 	  						result.rows = result.rows.map(row => Object.assign({}, row));
 							carrera = result.rows[0];
-	  					};
 
+							for (var i = 0; i < lecturas.length; i++) {
+								const selectCorredor = 'SELECT c.nombre,c.apellido FROM corredor c WHERE c.id = 1';
+								const corredorValue = [lecturas[i].idCorredor];
+
+								client.query(selectCorredor, (err,result)=>{
+									if (err) {
+			    						console.log(err.stack);
+			  						} else {
+			  							result.rows = result.rows.map(row => Object.assign({}, row));
+										corredor = result.rows[0];
+										if (lecturas[i] == undefined) {
+											return;
+										}
+										if (corredor){
+											arrayLecturas.push([lecturas[i].tiempoarduino-carrera.tiempoinicioarduino,corredor.nombre+ " " +corredor.apellido])		
+										}
+			  						};
+								});
+								if (i == arrayLecturas.length-1){
+									io.emit('lecturas',arrayLecturas);
+								}
+	  						};
+	  					};
 	  				});
 				};
 			});
