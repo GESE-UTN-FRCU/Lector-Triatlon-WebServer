@@ -13,14 +13,14 @@
   <body>
     <nav style="background-color: #00979d">
       <div class="nav-wrapper">
-        <a href="#" class="brand-logo"><img src="/img/arduinologo.png" height="50px;"></a>
+        <a href="" class="brand-logo"><img src="/img/arduinologo.png" height="50px;" style=" margin-left: 1em; margin-top: 0.2em;"></a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
           <li>
             <a class="btn modal-trigger" href="#modalCarrera">Agregar Carrera</a>
           </li>
-          <li>
+          <!-- <li>
             <a class="btn modal-trigger" href="#modalCorredor">Agregar Corredor</a>
-          </li>
+          </li> -->
           <li>
             <a class="btn modal-trigger" href="#modalCategoria">Agregar Categoría</a>
           </li>
@@ -120,39 +120,43 @@
                     <label>Carrera</label>
                   </div>
                   <div class="input-field col s6">
-                    <select multiple>
-                      <option value="1">Carlos</option>
-                      <option value="2">Pepe</option>
-                      <option value="3">Martin</option>
-                      <option value="3">Julia</option>
+                    <select>
+                      <option value="1">Sabado 20 abril</option>
+                      <option value="2">Sabado 2 mayo</option>
+                      <option value="3">Sabado 9 junio</option>
+                      <option value="3">Sabado 20 septiembre</option>
                     </select>
-                    <label>Corredor</label>
+                    <label>Categoría</label>
                   </div>
                   <div class="input-field col s6">
-                    <select>
-                      <option value="1">Lector 1</option>
-                      <option value="2">Lector 1</option>
-                      <option value="3">Lector 3</option>
-                    </select>
-                    <label>Lector</label>
+                    <input id="name" type="text" class="validate" name="nombre">
+                    <label class="active" for="name">Nombre</label>
                   </div>
-            <form id="formLeerTarjetaInscripcion" method="post">
-              <button class="btn waves-effect waves-light" type="submit" name="action">Ultima lectura
-                <i class="material-icons right">send</i>
-              </button>
-            </form>
+                  <div class="input-field col s6">
+                    <input id="surname" type="text" class="validate" name="apellido">
+                    <label class="active" for="surname">Apellido</label>
+                  </div>
+                  <div class="input-field col s6">
+                    <input id="surname" type="text" class="validate" name="codigo">
+                    <label class="active" for="surname">RFID asignado</label>
+                  </div>
+                  <form id="formLeerTarjetaInscripcion" method="post">
+                    <button class="btn waves-effect waves-light" type="submit" style="margin-top: 1.5em;">Leer RFID
+                      <i class="material-icons right">send</i>
+                    </button>
+                  </form>
             </div>
           </div>
           <div class="modal-footer">
-            <a href="" class="waves-effect waves-green btn-flat" type="submit">Agregar</a>
-            <a href="" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+            <button class="modal-close waves-effect waves-green btn-flat" type="submit">Agregar</button>
+            <button class="modal-close waves-effect waves-green btn-flat">Cancelar</button>
           </div>
         </form>  
       </div>
 
       <!-- Modal agregar corredor -->
 
-      <div id="modalCorredor" class="modal" style="width: 75% !important ; height: 75% !important ;">
+      <!-- <div id="modalCorredor" class="modal" style="width: 75% !important ; height: 75% !important ;">
         <div class="modal-content">
           <h4>Agregar Corredor</h4>
           
@@ -179,7 +183,7 @@
           <a href="" class="waves-effect waves-green btn-flat">Agregar</a>
           <a href="" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
         </div>
-      </div>
+      </div> -->
 
       <!-- Modal agregar categoria -->
 
@@ -188,19 +192,19 @@
           <h4>Agregar Categoria</h4>
           <div class="row">
             <div class="input-field col s6">
-              <input id="name" type="text" class="validate">
+              <input id="name" type="text" class="validate" name="nombre">
               <label class="active" for="name">Nombre</label>
             </div>
             <div class="input-field col s6">
-              <input id="surname" type="text" class="validate">
+              <input id="surname" type="text" class="validate" name="apellido">
               <label class="active" for="surname">Apellido</label>
             </div>
             <div class="input-field col s6">
-              <input id="min" type="text" class="validate">
+              <input id="min" type="text" class="validate" name="edadMin">
               <label class="active" for="min">Edad Minima</label>
             </div>
             <div class="input-field col s6">
-              <input id="max" type="text" class="validate">
+              <input id="max" type="text" class="validate" name="edadMax">
               <label class="active" for="max">Edad Maxima</label>
             </div>
           </div>
