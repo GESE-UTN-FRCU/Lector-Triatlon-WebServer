@@ -113,14 +113,14 @@ const client = new pg.Client(connectionString);
 
 	});
 
-	app.post('/carrera', function(req, res){
+	app.post('/agregarcarrera', function(req, res){
 
 		var nombre = req.body.nombre;
 		var fecha = req.body.fecha;
-		var horaInicio = req.body.horaInicio;
-		var horaFin = req.body.horaFin;
-		var tiempoInicioArduino = req.body.tiempoInicioArduino;
-		var tiempoFinArduino = req.body.tiempoFinArduino;
+		var horaInicio = 0;
+		var horaFin = 0;
+		var tiempoInicioArduino = 0;
+		var tiempoFinArduino = 0;
 		
 		const insertCarrera = 'INSERT INTO carrera(nombre,fecha,horaInicio,horaFin,tiempoInicioArduino,tiempoFinArduino) VALUES ($1,$2,$3,$4,$5,$6)';
 		const insertValorCarrera = [nombre,fecha,horaInicio,horaFin,tiempoInicioArduino,tiempoFinArduino];
