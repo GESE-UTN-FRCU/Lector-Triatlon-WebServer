@@ -141,7 +141,6 @@ const client = new pg.Client(connectionString);
   //       });
 
   		socket.emit('conectado',function(msg){
-
   		});
 
 		socket.on('cambiarModoLectura',function(msg) {
@@ -203,29 +202,36 @@ const client = new pg.Client(connectionString);
 
 		// Comunicacion con la DB
 		socket.on('pedirLecturas', function(socket){
-			const selectLecturas = 'SELECT * FROM lectura';
+			var tiempocarrera;
+			var corredores;
+			var lecturas;
+
+			const selectLecturas = 'SELECT * FROM lectura l WHERE l.idcarrera = 1';
 
 			client.query(selectLecturas, (err,result)=>{
 				if (err) {
 	    			console.log(err.stack);
 	  			} else {
 					result.rows = result.rows.map(row => Object.assign({}, row));
-					io.emit('lecturas',result.rows);
-	  			}
+					lecturas = result.rows;
+
+					const selectTiempocarrera  = 'SELECT FROM carrera c WHERE c.id = 1';
+
+					client.query(selectTiempoCarrera, (err,result)=>{
+						if (err) {
+	    					console.log(err.stack);
+	  					} else {
+	  						result.rows = result.rows.map(row => Object.assign({}, row));
+							carrera = result.rows[0];
+	  					};
+
+	  				});
+				};
 			});
 		});
 
 		socket.on('disconnect', function(socket){
 			console.log('Se desconecto un usuario');
-		});
-		//
-		//ACA LA IDEA SERIA QUE CARGE LAS LECTURAS A MEDIDAS QUE SE CARGAN EN LA DB.
-		//ESTO ESTA MAL.
-		// socket.on('lectura', function(msg){
-		// 	io.emit('lectura', msg);
-		// });
-		socket.on('tiempo', function(msg){
-			io.emit('tiempo', msg);
 		});
 	});
 
