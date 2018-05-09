@@ -251,7 +251,7 @@
       var $lecturas = $('#lecturas');
       
       socket.on('connected', function (data) {
-        socket.emit('pedirLecturas',{});
+        io.emit('pedirLecturas',{});
       });
 
       socket.on('lecturas',function (data){
