@@ -264,6 +264,22 @@ const client = new Client(connectionString);
 
 
 		// Comunicacion con la DB
+
+		socket.on('pedirCorredores', function(socket){
+			const selectCorredores = 'SELECT * FROM corredor';
+
+			client.query(selectCorredores,(err,result)=>{
+				result.rows = result.rows.map(row => Object.assign({}, row));
+				corredores = result.rows;
+
+				console.log(corredores);
+
+				io.emit('corredores',corredores);
+
+			});
+		});
+
+
 		socket.on('pedirLecturas', function(socket){
 			var tiempocarrera;
 			var corredor;
