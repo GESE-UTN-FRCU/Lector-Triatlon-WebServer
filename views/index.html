@@ -264,11 +264,10 @@
         socket.emit('pedirCorredores',{});
       });
 
-      socket.on('corredor', function (data) {
-        for (var i = corredor.length - 1; i >= 0; i--) {
-          
-          $corredores.append('<option value="' + data[0] + ' ">' + data[1] + ',' + data[2] + '</option>');
-          corredor[i]
+      socket.on('corredores', function (data) {
+        for (var i = 0; i <= data.length - 1; i++) {
+          console.log(data[i]);
+          $corredores.append('<option>' + data[i].nombre+ ' ' + data[i].apellido + '</option>');
         }
       });
   });

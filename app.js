@@ -271,9 +271,6 @@ const client = new Client(connectionString);
 			client.query(selectCorredores,(err,result)=>{
 				result.rows = result.rows.map(row => Object.assign({}, row));
 				corredores = result.rows;
-
-				console.log(corredores);
-
 				io.emit('corredores',corredores);
 
 			});
