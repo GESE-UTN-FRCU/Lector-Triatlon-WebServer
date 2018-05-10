@@ -293,7 +293,8 @@
       {
         var d, h, m, s, string;
         
-        ms = Math.floor(secs / 1000);
+        ms = secs.toString();
+        ms = ms.substring(ms.lenght - 3, ms.lenght);
         s = Math.floor(secs / 1000);
         ms = ms % 1000; 
         m = Math.floor(s / 60);
