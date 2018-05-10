@@ -59,11 +59,11 @@ const client = new Client(connectionString);
   // 				ip = ip.substr(7);
 		// 	}
 
-		const selectInscripcion = 'SELECT * FROM inscripcion WHERE codigo = 3200000 AND activa = true'
-		//const selectValor = [codigo];
+		const selectInscripcion = 'SELECT * FROM inscripcion WHERE codigo = $1 AND activa = true'
+		const selectValor = [codigo];
 
 		//selectValor
-		client.query(selectInscripcion, function(err, result) {
+		client.query(selectInscripcion,selectValor, function(err, result) {
 	    	if(err) {
 	      		return console.error('error running query', err);
 	    	}
@@ -71,7 +71,10 @@ const client = new Client(connectionString);
 		    	result.rows = result.rows.map(row => Object.assign({}, row));
 		    	inscripcion = result.rows[0];
 
-		    	client.query('SELECT c.nombre,c.apellido FROM corredor c WHERE c.id = 1',
+		    	const selectCorredor = 'SELECT c.nombre,c.apellido FROM corredor c WHERE c.id = $1';
+		    	const selectValorCorredor = [inscripcion.idcorredor];
+
+		    	client.query(selectCorredor,selectValorCorredor,
 		    		function(err,result){
 		    		if(err) {
 		      			return console.error('error running query', err);
@@ -80,7 +83,7 @@ const client = new Client(connectionString);
 		    			result.rows = result.rows.map(row => Object.assign({}, row));
 		    			corredor = result.rows[0];
 
-			    		client.query('SELECT c.tiempoinicioarduino FROM carrera c where c.id = 1',
+			    		client.query('SELECT c.tiempoinicioarduino FROM carrera c where c.id = 22',
 			    			function(err,result){
 				    		if(err) {
 				      			return console.error('error running query', err);
@@ -154,7 +157,7 @@ const client = new Client(connectionString);
 		var idcorredor = req.body.idcorredor;
 		//var idcarrera = req.body.idcarrera;
 		//var idcategoria = req.body.idcategoria;
-		var idcarrera = 1;
+		var idcarrera = 22;
 		var idcategoria = 1;
 		var codigo = req.body.codigo;
 		var activa = true;
@@ -190,16 +193,33 @@ const client = new Client(connectionString);
 		});
 
 		// COMUNICACION CON EL ARDUINO.
-		socket.on('pedirTiempo', function(msg){
+		socket.on('actualizarCarrera', function(msg){
 
-			console.log('Ip del arduino: ' + msg);
-			let arduinoURL = new URL('http://' + msg + '/millis')
+			console.log('Ip del arduino: ' + msg[0]);
+			let arduinoURL = new URL('http://' + msg[0] + '/millis')
 
 			http.get(arduinoURL, (res) => {
 			  console.log("Obtuvo respuesta: " + res.statusCode);
 			    res.on('data', function (chunk) {
 			    	//Aca hay que actualizar la carrera en la base de datos.
 				    console.log('Tiempo del arduino: ' + chunk);
+				    var updateCarrera;
+					    if (msg[1] == 'iniciar') {
+					    	updateCarrera = 'UPDATE carrera SET tiempoinicioarduino = $1 WHERE id = 22';
+					    }
+					    else{
+					    	updateCarrera = 'UPDATE carrera SET tiempofinarduino = $1 WHERE id = 22';
+					    }
+						
+						const updateValorCarrera = [''+chunk];
+
+						client.query(updateCarrera,updateValorCarrera, (err,result)=>{
+							if (err) {
+					    		console.log(err.stack)
+					  		} else {
+					  			console.log("Actualizando carrera.");
+					  		}
+						});
 				  });
 			}).on('error', function(e) {
 			  console.log("Error al enviar " + e.message);
@@ -217,7 +237,7 @@ const client = new Client(connectionString);
 			    res.on('data', function (chunk) {
 			    	//Aca hay que emitir segun el caso.
 				    console.log('Ultima lectura del arduino: ' + chunk);
-				    io.emit('lecturaPedida',chunk);
+				    io.emit('lecturaPedida','' + chunk);
 				  });
 			}).on('error', function(e) {
 			  console.log("Error al enviar " + e.message);
@@ -249,7 +269,7 @@ const client = new Client(connectionString);
 			var corredores;
 			var lecturas;
 
-			const selectLecturas = 'SELECT * FROM lectura l WHERE l.idcarrera = 1';
+			const selectLecturas = 'SELECT * FROM lectura l WHERE l.idcarrera = 22';
 
 			client.query(selectLecturas, (err,result)=>{
 				if (err) {
@@ -258,7 +278,7 @@ const client = new Client(connectionString);
 					result.rows = result.rows.map(row => Object.assign({}, row));
 					lecturas = result.rows;
 
-					const selectTiempoCarrera  = 'SELECT c.tiempoinicioarduino FROM carrera c WHERE c.id = 1';
+					const selectTiempoCarrera  = 'SELECT c.tiempoinicioarduino FROM carrera c WHERE c.id = 22';
 
 					client.query(selectTiempoCarrera, (err,result)=>{
 						if (err) {
@@ -268,11 +288,11 @@ const client = new Client(connectionString);
 							carrera = result.rows[0];
 							var j = 0;
 							for (var i = 0; i < lecturas.length-1; i++) {
-								const selectCorredor = 'SELECT c.nombre,c.apellido FROM corredor c WHERE c.id = $1';
-								const corredorValue = [lecturas[i].idcorredor];
-
 								(async ()=>{
 									try{
+										const selectCorredor = 'SELECT c.nombre,c.apellido FROM corredor c WHERE c.id = $1';
+										const corredorValue = [lecturas[j].idcorredor];
+
 										var result = await client.query(selectCorredor,corredorValue);
 										result.rows = result.rows.map(row => Object.assign({}, row));
 										corredor = result.rows[0];

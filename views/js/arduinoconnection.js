@@ -4,17 +4,19 @@ function readlastRFID(){
 	socket.emit('pedirLectura','192.168.10.152');
 	
 	socket.on('lecturaPedida', function(res){
-
-		//document.getElementById('codigo').value= res;
-		document.getElementById('codigo').value='3000';
+		document.getElementById('codigo').value= res;
 		document.getElementById('labelCodigo').className="active";
-
 	});
 
 
 }
 
-function getTimeArduino(){
+function initCarrera(){
 		var socket = io();
-	    socket.emit('pedirTiempo','192.168.10.152');
+	    socket.emit('actualizarCarrera',['192.168.10.152','iniciar']);
+}
+
+function endCarrera(){
+		var socket = io();
+	    socket.emit('actualizarCarrera',['192.168.10.152','fin']);
 }

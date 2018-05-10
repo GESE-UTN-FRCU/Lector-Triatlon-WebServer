@@ -15,12 +15,14 @@ function start() {
 
     started = setInterval(clockRunning, 10);
 
-    getTimeArduino();	
+    initCarrera();	
 }
 
 function stop() {
     timeStopped = new Date();
     clearInterval(started);
+
+    endCarrera();
 }
  
 function reset() {
