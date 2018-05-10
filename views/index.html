@@ -214,11 +214,11 @@
 
 	<!--Import jQuery before materialize.js-->
 	<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="js/materialize.min.js"></script>
-	<script type="text/javascript" src="js/clock.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+  <script type="text/javascript" src="js/materialize.min.js"></script>
+  <script type="text/javascript" src="js/clock.js"></script>
   <script type="text/javascript" src="js/datepicker.js"></script>
   <script type="text/javascript" src="js/arduinoconnection.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
 	<script type="text/javascript">
       document.addEventListener('DOMContentLoaded', function() {
@@ -243,7 +243,6 @@
       var puesto = 1;
       
       $(function () {
-      var socket = io.connect();
       var $lecturas = $('#lecturas');
       
       socket.on('conectado', function (data) {
@@ -326,7 +325,7 @@
         m = m % 60;
         d = Math.floor(h / 24);
         h = h % 24;
-        string = d.toString() + ':' + m.toString() + ':' +s.toString() + ':' + ms.toString(); 
+        string = d.toString() + ':' + m.toString() + ':' +s.toString() + '.' + ms.toString(); 
       return string;
       }
 
