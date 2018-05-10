@@ -292,15 +292,17 @@
     function secondsToTime(secs)
       {
         var d, h, m, s, string;
-        cs = secs * 0.1; 
+        
+        ms = Math.floor(secs / 1000);
         s = Math.floor(secs / 1000);
+        ms = cs % 1000; 
         m = Math.floor(s / 60);
         s = s % 60;
         h = Math.floor(m / 60);
         m = m % 60;
         d = Math.floor(h / 24);
         h = h % 24;
-        string = d.toString() + ':' + m.toString() + ':' +s.toString() + ':' + cs.toString(); 
+        string = d.toString() + ':' + m.toString() + ':' +s.toString() + ':' + ms.toString(); 
       return string;
       }
 
