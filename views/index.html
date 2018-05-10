@@ -18,9 +18,9 @@
           <li>
             <a class="btn modal-trigger" href="#modalCarrera">Agregar Carrera</a>
           </li>
-          <!-- <li>
+          <li>
             <a class="btn modal-trigger" href="#modalCorredor">Agregar Corredor</a>
-          </li> -->
+          </li>
           <li>
             <a class="btn modal-trigger" href="#modalCategoria">Agregar Categoría</a>
           </li>
@@ -56,8 +56,8 @@
                   <ul class="tabs">
                     <li class="tab col s3"><a class="active" href="#test1">Todos</a></li>
                     <li class="tab col s3"><a href="#test2">Masculino +20</a></li>
-                    <li class="tab col s3"><a href="#test3">Masculino +23</a></li>
-                    <li class="tab col s3"><a href="#test4">Masculino +29</a></li>
+                    <li class="tab col s3"><a href="#test3">Masculino +24</a></li>
+                    <li class="tab col s3"><a href="#test4">Femenino +20</a></li>
                   </ul>
               </div>
               </div>
@@ -98,7 +98,7 @@
           </div>
           <div class="modal-footer">
             <button class="modal-close waves-effect waves-green btn-flat" type="submit">Agregar</button>
-            <button class="modal-close waves-effect waves-green btn-flat">Cancelar</button>
+            <a class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
           </div>
         </form>
       </div>
@@ -106,84 +106,77 @@
       <!-- Modal inscribir corredor a carrera -->
 
       <div id="modalInscripcion" class="modal" style="width: 75% !important ; height: 75% !important ;">
-        <form id="formInscripcion" method="post">
+        <form id="formAgregarInscripcion" method="post">
           <div class="modal-content">
-            <h4>Inscripción</h4>
+            <h4>Agregar Inscripción</h4>
             <div class="row">
                   <div class="input-field col s6">
                     <select>
                       <option value="1">Sabado 20 abril</option>
-                      <option value="2">Sabado 2 mayo</option>
-                      <option value="3">Sabado 9 junio</option>
-                      <option value="3">Sabado 20 septiembre</option>
                     </select>
                     <label>Carrera</label>
                   </div>
                   <div class="input-field col s6">
                     <select>
-                      <option value="1">Sabado 20 abril</option>
-                      <option value="2">Sabado 2 mayo</option>
-                      <option value="3">Sabado 9 junio</option>
-                      <option value="3">Sabado 20 septiembre</option>
+                      <option value="1">Femenino +20</option>
+                      <option value="2">Femenino +24</option>
+                      <option value="3">Masculino +20</option>
+                      <option value="4">Masculino +24</option>
                     </select>
                     <label>Categoría</label>
                   </div>
                   <div class="input-field col s6">
-                    <input id="name" type="text" class="validate" name="nombre">
-                    <label class="active" for="name">Nombre</label>
+                    <input id="idcorredor" type="text" name="idcorredor" class="validate">
+                    <label class="active">ID Corredor</label>
                   </div>
                   <div class="input-field col s6">
-                    <input id="surname" type="text" class="validate" name="apellido">
-                    <label class="active" for="surname">Apellido</label>
+                    <input id="codigo" type="text" name="codigo" class="validate">
+                    <label id="labelCodigo" class="active">Codigo RFID</label>
                   </div>
-                  <div class="input-field col s6">
-                    <input id="surname" type="text" class="validate" name="codigo">
-                    <label class="active" for="surname">RFID asignado</label>
-                  </div>
-                  <form id="formLeerTarjetaInscripcion" method="post">
-                    <button class="btn waves-effect waves-light" type="submit" style="margin-top: 1.5em;">Leer RFID
+                    <a class="btn waves-effect waves-light" style="margin-top: 1.5em;" onClick="readlastRFID()">Leer RFID
                       <i class="material-icons right">send</i>
-                    </button>
-                  </form>
+                    </a>
             </div>
           </div>
           <div class="modal-footer">
             <button class="modal-close waves-effect waves-green btn-flat" type="submit">Agregar</button>
-            <button class="modal-close waves-effect waves-green btn-flat">Cancelar</button>
+            <a class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
           </div>
         </form>  
       </div>
 
       <!-- Modal agregar corredor -->
 
-      <!-- <div id="modalCorredor" class="modal" style="width: 75% !important ; height: 75% !important ;">
+      <div id="modalCorredor" class="modal" style="width: 75% !important ; height: 75% !important ;">
+        <form id="formAgregarCorredor" method="post">
         <div class="modal-content">
           <h4>Agregar Corredor</h4>
           
           <div class="row">
             <div class="input-field col s6">
-              <input id="name" type="text" class="validate">
-              <label class="active" for="name">Nombre</label>
+              <input id="nombre" type="text" name="nombre" class="validate">
+              <label class="active">Nombre</label>
             </div>
             <div class="input-field col s6">
-              <input id="surname" type="text" class="validate">
-              <label class="active" for="surname">Apellido</label>
+              <input id="apellido" type="text" name='apellido' class="validate">
+              <label class="active">Apellido</label>
             </div>
             <div class="input-field col s6">
-              <input id="dni" type="text" class="validate">
-              <label class="active" for="dni">DNI</label>
+              <input id="dni" type="text" name='dni' class="validate">
+              <label class="active">DNI</label>
             </div>
             <div class="input-field col s6">
-              <input id="date" type="text" class="datepicker">
-              <label class="active" for="date">Fecha de nacimiento</label>
+              <input id="fechanacimiento" type="text" name='fechanacimiento' class="datepicker">
+              <label class="active">Fecha de nacimiento</label>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <a href="" class="waves-effect waves-green btn-flat">Agregar</a>
-          <a href="" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+          <button class="modal-close waves-effect waves-green btn-flat" type="submit">Agregar</button>
+          <a class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+        </form>
         </div>
-      </div> -->
+      </div>
 
       <!-- Modal agregar categoria -->
 
@@ -220,34 +213,29 @@
 	<script type="text/javascript" src="js/materialize.min.js"></script>
 	<script type="text/javascript" src="js/clock.js"></script>
   <script type="text/javascript" src="js/datepicker.js"></script>
+  <script type="text/javascript" src="js/arduinoconnection.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
 	<script type="text/javascript">
       document.addEventListener('DOMContentLoaded', function() {
-      var elems = document.querySelectorAll('.modal');
-      var instances = M.Modal.init();
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init();
       });
       // Or with jQuery
       $(document).ready(function(){
-      $('.modal').modal();
+        $('.modal').modal();
       });
       document.addEventListener('DOMContentLoaded', function() {
-      var elems = document.querySelectorAll('select');
-      var instances = M.FormSelect.init();
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init();
       });
       // Or with jQuery
       $(document).ready(function(){
-      $('select').formSelect();
+        $('select').formSelect();
       });
     </script>
 
 	<script>
-	  // $(function () {
-	  //   var socket = io();
-	  //   socket.on('lectura', function(msg){
-	  //     $('#messages').append($('<li>').text(msg));
-	  //   });
-	  // });
       var puesto = 1;
       
       $(function () {
@@ -258,21 +246,7 @@
         socket.emit('pedirLecturas',{});
       });
 
-      socket.on('lecturas',function (data){
-        for (var i = data.length - 1; i >= 0; i--) {
-          $lecturas.append('<tr><td>' + puesto + '</td><td>' + data[i].tiempoarduino + '</td><td>' + data[i].codigo + '</td></tr>');
-          puesto++;
-        }
-      });
-
       socket.on('lectura', function (data) {
-        // if(localStorage.getItem('carrera')){
-        //   var jlectura = JSON.parse(localStorage.getItem('carrera'));
-        // }else{
-        //   var jlectura = {};
-        // }
-        //   jlectura[puesto] = {"puesto": puesto ; "tiempo": data[0]; "nombre": data[1]};
-        //   localStorage.setItem('carrera', JSON.stringify(jlectura));
           $lecturas.append('<tr><td>' + puesto + '</td><td>' + secondsToTime(data[0]) + '</td><td>' + data[1] + '</td></tr>');
           puesto++;
       });
@@ -284,21 +258,10 @@
   <script type="text/javascript">
     
     $(function(){
-      $('#formInscripcion').on('submit', function(e){
+      $('#formAgregarInscripcion').on('submit', function(e){
         e.preventDefault();
-        $.post('http://localhost:3000/inscripcion', 
-           $('#formInscripcion').serialize(), 
-           function(data, status, xhr){
-             // do something here with response;
-           });
-      });
-    });
-
-    $(function(){
-      $('#formLeerTarjetaInscripcion').on('submit', function(e){
-        e.preventDefault();
-        $.post('http://localhost:3000/codigoInscripcion', 
-           $('#formLeerTarjetaInscripcion').serialize(), 
+        $.post('http://localhost:3000/agregarinscripcion', 
+           $('#formAgregarInscripcion').serialize(), 
            function(data, status, xhr){
              // do something here with response;
            });
@@ -315,17 +278,29 @@
       });
     });
 
+    $(function(){
+      $('#formAgregarCorredor').on('submit', function(e){
+        e.preventDefault();
+        $.post('http://localhost:3000/agregarcorredor', 
+           $('#formAgregarCorredor').serialize(), 
+           function(data, status, xhr){
+             // do something here with response;
+           });
+      });
+    });
+
     function secondsToTime(secs)
       {
-        var d, h, m, s;
-        s = Math.floor(ms / 1000);
+        var d, h, m, s, string;
+        s = Math.floor(secs / 1000);
         m = Math.floor(s / 60);
         s = s % 60;
         h = Math.floor(m / 60);
         m = m % 60;
         d = Math.floor(h / 24);
         h = h % 24;
-      return { d: d, h: h, m: m, s: s };
+        string = d.toString() + ':' + m.toString() + ':' +s.toString(); 
+      return string;
       }
 
   </script>

@@ -16,7 +16,7 @@ var bodyParser = require('body-parser');
 var io = require('socket.io')(server);
 
 //Base de datos
-var pg = require('pg');
+var { Client } = require('pg');
 
 var permitirLectura = true;
 
@@ -24,7 +24,7 @@ const connectionString = "postgres://postgres:chichilo@localhost:5433/carreras";
 
 const { URL } = require('url');
 
-const client = new pg.Client(connectionString);
+const client = new Client(connectionString);
 	client.connect();
 
 //var queryNotify = client.query('LISTEN addedrecord');
@@ -130,6 +130,48 @@ const client = new pg.Client(connectionString);
 		});
 	});
 
+	app.post('/agregarcorredor', function(req, res){
+
+		var nombre = req.body.nombre;
+		var apellido = req.body.apellido;
+		var fechanacimiento = req.body.fechanacimiento;
+		var dni = req.body.dni;
+
+		const insertCorredor = 'INSERT INTO corredor(nombre,apellido,dni,fechanacimiento) VALUES ($1,$2,$3,$4)';
+		const insertValorCorredor = [nombre,apellido,dni,fechanacimiento];
+
+		client.query(insertCorredor,insertValorCorredor, (err,result)=>{
+			if (err) {
+    			console.log(err.stack)
+  			} else {
+  				console.log("Agregando corredor.");
+  			}
+		});
+	});
+
+	app.post('/agregarinscripcion', function(req, res){
+
+		var idcorredor = req.body.idcorredor;
+		//var idcarrera = req.body.idcarrera;
+		//var idcategoria = req.body.idcategoria;
+		var idcarrera = 1;
+		var idcategoria = 1;
+		var codigo = req.body.codigo;
+		var activa = true;
+
+		const insertInscripcion = 'INSERT INTO inscripcion(idcorredor,idcarrera,codigo,activa,idcategoria) VALUES ($1,$2,$3,$4,$5)';
+		const insertValorInscripcion = [idcorredor,idcarrera,codigo,activa,idcategoria];
+
+		client.query(insertInscripcion,insertValorInscripcion, (err,result)=>{
+			if (err) {
+    			console.log(err.stack)
+  			} else {
+  				console.log("Agregando inscripcion.");
+  			}
+		});
+	});
+
+
 	// Socket Responses
 	io.on('connection', function(socket){
 		console.log('Se conecto un usuario.');
@@ -156,7 +198,7 @@ const client = new pg.Client(connectionString);
 			http.get(arduinoURL, (res) => {
 			  console.log("Obtuvo respuesta: " + res.statusCode);
 			    res.on('data', function (chunk) {
-			    	//Aca hay que emitir segun el caso.
+			    	//Aca hay que actualizar la carrera en la base de datos.
 				    console.log('Tiempo del arduino: ' + chunk);
 				  });
 			}).on('error', function(e) {
@@ -175,6 +217,7 @@ const client = new pg.Client(connectionString);
 			    res.on('data', function (chunk) {
 			    	//Aca hay que emitir segun el caso.
 				    console.log('Ultima lectura del arduino: ' + chunk);
+				    io.emit('lecturaPedida',chunk);
 				  });
 			}).on('error', function(e) {
 			  console.log("Error al enviar " + e.message);
@@ -205,7 +248,6 @@ const client = new pg.Client(connectionString);
 			var tiempocarrera;
 			var corredores;
 			var lecturas;
-			var arrayLecturas = [];
 
 			const selectLecturas = 'SELECT * FROM lectura l WHERE l.idcarrera = 1';
 
@@ -224,38 +266,30 @@ const client = new pg.Client(connectionString);
 	  					} else {
 	  						result.rows = result.rows.map(row => Object.assign({}, row));
 							carrera = result.rows[0];
+							var j = 0;
+							for (var i = 0; i < lecturas.length-1; i++) {
+								const selectCorredor = 'SELECT c.nombre,c.apellido FROM corredor c WHERE c.id = $1';
+								const corredorValue = [lecturas[i].idcorredor];
 
-							for (var i = 0; i < lecturas.length; i++) {
-								const selectCorredor = 'SELECT c.nombre,c.apellido FROM corredor c WHERE c.id = 1';
-								const corredorValue = [lecturas[i].idCorredor];
-
-								client.query(selectCorredor, (err,result)=>{
-									if (err) {
-			    						console.log(err.stack);
-			  						} else {
-			  							result.rows = result.rows.map(row => Object.assign({}, row));
+								(async ()=>{
+									try{
+										var result = await client.query(selectCorredor,corredorValue);
+										result.rows = result.rows.map(row => Object.assign({}, row));
 										corredor = result.rows[0];
-										if (lecturas[i] == undefined) {
-											return;
-										}
-										if (corredor){
-											arrayLecturas.push([lecturas[i].tiempoarduino-carrera.tiempoinicioarduino,corredor.nombre+ " " +corredor.apellido])		
-										}
-			  						};
-								});
-								if (i == arrayLecturas.length-1){
-									io.emit('lecturas',arrayLecturas);
-								}
-	  						};
+										j++;
+									} finally {
+										io.emit('lectura',[lecturas[j].tiempoarduino - carrera.tiempoinicioarduino,corredor.nombre+ " " +corredor.apellido]);
+									}
+								})().catch(e => console.error(e.message,e.stack));		
 	  					};
-	  				});
-				};
-			});
+	  				};
+	  			});
+			}
 		});
+	});
 
 		socket.on('disconnect', function(socket){
 			console.log('Se desconecto un usuario');
 		});
 	});
-
 server.listen(ops.port, () => console.log('Servidor iniciado en el puerto ' + ops.port + '.'));

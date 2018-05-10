@@ -4,7 +4,6 @@ var timeBegan = null
     , started = null;
 
 function start() {
-    var socket = io(); 
     if (timeBegan === null) {
         timeBegan = new Date();
     }
@@ -16,8 +15,7 @@ function start() {
 
     started = setInterval(clockRunning, 10);
 
-    socket.emit('cambiarModoLectura',''); 
-    socket.emit('pedirTiempo','192.168.8.152');	
+    getTimeArduino();	
 }
 
 function stop() {
