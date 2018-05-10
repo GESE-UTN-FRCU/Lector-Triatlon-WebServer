@@ -126,6 +126,10 @@
                     <label>Categoría</label>
                   </div>
                   <div class="input-field col s6">
+                    <select id="corredores"></select>
+                    <label>Corredores</label>
+                  </div>
+                  <div class="input-field col s6">
                     <input id="idcorredor" type="text" name="idcorredor" class="validate">
                     <label class="active">ID Corredor</label>
                   </div>
@@ -248,6 +252,21 @@
       socket.on('lectura', function (data) {
           $lecturas.append('<tr><td>' + puesto + '</td><td>' + secondsToTime(data[0]) + '</td><td>' + data[1] + '</td></tr>');
           puesto++;
+      });
+  });
+  </script>
+
+  <script>
+      $(function () {
+      var socket = io.connect();
+      var $corredores = $('#corredores');
+      
+      socket.on('conectado', function (data) {
+        socket.emit('pedirCorredores',{});
+      });
+
+      socket.on('corredor', function (data) {
+          $corredores.append('<option value="' + data[0] ' ">' + data[1] + '</option>');
       });
   });
 	</script>
