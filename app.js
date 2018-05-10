@@ -266,7 +266,7 @@ const client = new Client(connectionString);
 		// Comunicacion con la DB
 		socket.on('pedirLecturas', function(socket){
 			var tiempocarrera;
-			var corredores;
+			var corredor;
 			var lecturas;
 
 			const selectLecturas = 'SELECT * FROM lectura l WHERE l.idcarrera = 22';
@@ -291,12 +291,13 @@ const client = new Client(connectionString);
 								(async ()=>{
 									try{
 										const selectCorredor = 'SELECT c.nombre,c.apellido FROM corredor c WHERE c.id = $1';
-										const corredorValue = [lecturas[j].idcorredor];
+										var corredorValue = [lecturas[i].idcorredor];
 
 										var result = await client.query(selectCorredor,corredorValue);
 										result.rows = result.rows.map(row => Object.assign({}, row));
 										corredor = result.rows[0];
 										j++;
+
 									} finally {
 										io.emit('lectura',[lecturas[j].tiempoarduino - carrera.tiempoinicioarduino,corredor.nombre+ " " +corredor.apellido]);
 									}
