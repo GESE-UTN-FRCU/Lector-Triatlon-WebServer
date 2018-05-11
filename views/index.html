@@ -282,6 +282,7 @@
     $(function(){
       $('#formAgregarInscripcion').on('submit', function(e){
         e.preventDefault();
+        e.stopPropagation();
         $.post('http://localhost:3000/agregarinscripcion', 
            $('#formAgregarInscripcion').serialize(), 
            function(data, status, xhr){
@@ -294,6 +295,7 @@
     $(function(){
       $('#formAgregarCarrera').on('submit', function(e){
         e.preventDefault();
+        e.stopPropagation();
         $.post('http://localhost:3000/agregarcarrera', 
            $('#formAgregarCarrera').serialize(), 
            function(data, status, xhr){
@@ -306,6 +308,7 @@
     $(function(){
       $('#formAgregarCorredor').on('submit', function(e){
         e.preventDefault();
+        e.stopPropagation();
         $.post('http://localhost:3000/agregarcorredor', 
            $('#formAgregarCorredor').serialize(), 
            function(data, status, xhr){
