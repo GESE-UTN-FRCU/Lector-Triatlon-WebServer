@@ -97,7 +97,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button class="modal-close waves-effect waves-green btn-flat" type="submit">Agregar</button>
+            <button class="modal-close waves-effect waves-green btn-flat">Agregar</button>
             <a class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
           </div>
         </form>
@@ -145,7 +145,7 @@
                 </div>
           </div>
           <div class="modal-footer">
-            <button class="modal-close waves-effect waves-green btn-flat" type="submit">Agregar</button>
+            <button class="modal-close waves-effect waves-green btn-flat">Agregar</button>
             <a class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
           </div>
         </form>  
@@ -178,7 +178,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="modal-close waves-effect waves-green btn-flat" type="submit">Agregar</button>
+          <button class="modal-close waves-effect waves-green btn-flat">Agregar</button>
           <a class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
         </form>
         </div>
@@ -209,8 +209,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <a href="" class="waves-effect waves-green btn-flat">Agregar</a>
-          <a href="" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+          <button class="modal-close waves-effect waves-green btn-flat">Agregar</button>
+          <a class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
         </div>
       </div>
 
@@ -241,6 +241,7 @@
       });
     </script>
 
+  <!-- Pedir lecturas -->
 	<script>
       var puesto = 1;
       
@@ -258,6 +259,7 @@
   });
   </script>
 
+<!-- Pedir corredores -->
   <script>
       $(function () {
       
@@ -266,10 +268,7 @@
       });
 
       socket.on('corredores', function (data) {
-
-
         for (var i = 0; i <= data.length - 1; i++) {
-
             $('#corredores').append($('<option value=' + data[i].id + '>' + data[i].nombre+' '+data[i].apellido + '</option>'));
         }
       });
@@ -288,6 +287,7 @@
            function(data, status, xhr){
              // do something here with response;
            });
+        $("#formAgregarInscripcion")[0].reset();
       });
     });
 
@@ -297,7 +297,9 @@
         $.post('http://localhost:3000/agregarcarrera', 
            $('#formAgregarCarrera').serialize(), 
            function(data, status, xhr){
+             // do something here with response;
            });
+        $("#formAgregarCarrera")[0].reset();
       });
     });
 
@@ -309,6 +311,7 @@
            function(data, status, xhr){
              // do something here with response;
            });
+        $("#formAgregarCorredor")[0].reset();
       });
     });
 
