@@ -125,14 +125,16 @@
                     </select>
                     <label>Categoría</label>
                   </div>
+                </div>
+                <div class="row">
+                  
                   <div class="input-field col s6">
-                    <select id="corredores"></select>
-                    <label>Corredores</label>
+                    <select id="corredores" name="idcorredor" class="browser-default">
+                    </select>
+                    <label class="active">Corredores</label>
                   </div>
-                  <div class="input-field col s6">
-                    <input id="idcorredor" type="text" name="idcorredor" class="validate">
-                    <label class="active">ID Corredor</label>
-                  </div>
+                </div>
+                <div class="row">  
                   <div class="input-field col s6">
                     <input id="codigo" type="text" name="codigo" class="validate">
                     <label id="labelCodigo" class="active">Codigo RFID</label>
@@ -140,7 +142,7 @@
                     <a class="btn waves-effect waves-light" style="margin-top: 1.5em;" onClick="readlastRFID()">Leer RFID
                       <i class="material-icons right">send</i>
                     </a>
-            </div>
+                </div>
           </div>
           <div class="modal-footer">
             <button class="modal-close waves-effect waves-green btn-flat" type="submit">Agregar</button>
@@ -258,16 +260,17 @@
 
   <script>
       $(function () {
-      var $corredores = $('#corredores');
       
       socket.on('conectado', function (data) {
         socket.emit('pedirCorredores',{});
       });
 
       socket.on('corredores', function (data) {
+
+
         for (var i = 0; i <= data.length - 1; i++) {
-          console.log(data[i]);
-          $corredores.append('<option>' + data[i].nombre+ ' ' + data[i].apellido + '</option>');
+
+            $('#corredores').append($('<option value=' + data[i].id + '>' + data[i].nombre+' '+data[i].apellido + '</option>'));
         }
       });
   });

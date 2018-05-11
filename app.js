@@ -71,6 +71,11 @@ const client = new Client(connectionString);
 		    	result.rows = result.rows.map(row => Object.assign({}, row));
 		    	inscripcion = result.rows[0];
 
+		    	if (inscripcion == undefined) {
+		    		console.log("Tarjeta no registrada.")
+		    		return;
+		    	}
+
 		    	const selectCorredor = 'SELECT c.nombre,c.apellido FROM corredor c WHERE c.id = $1';
 		    	const selectValorCorredor = [inscripcion.idcorredor];
 
