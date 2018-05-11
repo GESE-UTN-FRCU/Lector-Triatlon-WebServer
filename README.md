@@ -1,10 +1,10 @@
-# WebServer del Lector triatlon
+# Parte servidor - Lector triatlon
 
 El servidor tiene tres partes principales:
 
-  - Un servidor web para cargar las vistas.
-  - Un WebSocket para interactuar en tiempo real con los arduinos.
-  - Una base de datos en Postgresql.
+  - Una pagina web para visualizar los datos y agregar las entidades que correspondan.
+  - Socket.io para interactuar en tiempo real con los arduinos y con el frontend.
+  - Comunicacion a una base de datos en Postgresql.
 
 ### ¿Como abrir el servidor?
 
