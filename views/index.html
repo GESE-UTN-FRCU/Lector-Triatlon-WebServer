@@ -97,7 +97,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button class="modal-close waves-effect waves-green btn-flat">Agregar</button>
+            <a class="modal-close waves-effect waves-green btn-flat" onClick="agregarCarrera()">Agregar</a>
             <a class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
           </div>
         </form>
@@ -145,7 +145,7 @@
                 </div>
           </div>
           <div class="modal-footer">
-            <button class="modal-close waves-effect waves-green btn-flat">Agregar</button>
+            <a class="modal-close waves-effect waves-green btn-flat" onClick="agregarInscripcion()">Agregar</a>
             <a class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
           </div>
         </form>  
@@ -178,7 +178,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="modal-close waves-effect waves-green btn-flat">Agregar</button>
+            <a class="modal-close waves-effect waves-green btn-flat" onClick="agregarCorredor()">Agregar</a>
           <a class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
         </form>
         </div>
@@ -209,7 +209,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="modal-close waves-effect waves-green btn-flat">Agregar</button>
+          <a class="modal-close waves-effect waves-green btn-flat" onClick="agregarCategoria()">Agregar</a>
           <a class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
         </div>
       </div>
@@ -242,10 +242,10 @@
     </script>
 
   <!-- Pedir lecturas -->
-	<script>
-      var puesto = 1;
+	<script type="text/javascript">
       
       $(function () {
+      var puesto = 1;
       var $lecturas = $('#lecturas');
       
       socket.on('conectado', function (data) {
@@ -260,62 +260,47 @@
   </script>
 
 <!-- Pedir corredores -->
-  <script>
+  <script type="text/javascript">
       $(function () {
       
-      socket.on('conectado', function (data) {
-        socket.emit('pedirCorredores',{});
-      });
+        socket.on('conectado', function (data) {
+          socket.emit('pedirCorredores',{});
+        });
 
-      socket.on('corredores', function (data) {
-        for (var i = 0; i <= data.length - 1; i++) {
-            $('#corredores').append($('<option value=' + data[i].id + '>' + data[i].nombre+' '+data[i].apellido + '</option>'));
-        }
+        socket.on('corredores', function (data) {
+          for (var i = 0; i <= data.length - 1; i++) {
+              $('#corredores').append($('<option value=' + data[i].id + '>' + data[i].nombre+' '+data[i].apellido + '</option>'));
+              }
+        });
       });
-  });
 	</script>
 
   <!-- Forms -->
   <script type="text/javascript">
-    
-    $(function(){
-      $('#formAgregarInscripcion').on('submit', function(e){
-        e.preventDefault();
-        e.stopPropagation();
+    function agregarInscripcion(){
         $.post('http://localhost:3000/agregarinscripcion', 
            $('#formAgregarInscripcion').serialize(), 
            function(data, status, xhr){
              // do something here with response;
            });
         $("#formAgregarInscripcion")[0].reset();
-      });
-    });
+    };
 
-    $(function(){
-      $('#formAgregarCarrera').on('submit', function(e){
-        e.preventDefault();
-        e.stopPropagation();
+    function agregarCarrera(){
         $.post('http://localhost:3000/agregarcarrera', 
-           $('#formAgregarCarrera').serialize(), 
-           function(data, status, xhr){
-             // do something here with response;
-           });
+           $('#formAgregarCarrera').serialize()
+           );
         $("#formAgregarCarrera")[0].reset();
-      });
-    });
+      };
 
-    $(function(){
-      $('#formAgregarCorredor').on('submit', function(e){
-        e.preventDefault();
-        e.stopPropagation();
+    function agregarCorredor(){
         $.post('http://localhost:3000/agregarcorredor', 
            $('#formAgregarCorredor').serialize(), 
            function(data, status, xhr){
              // do something here with response;
            });
         $("#formAgregarCorredor")[0].reset();
-      });
-    });
+    };
 
     function secondsToTime(secs)
       {

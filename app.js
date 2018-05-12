@@ -134,6 +134,7 @@ const client = new Client(connectionString);
     			console.log(err.stack)
   			} else {
   				console.log("Agregando carrera.");
+  				res.sendStatus(200);
   			}
 		});
 	});
@@ -153,6 +154,7 @@ const client = new Client(connectionString);
     			console.log(err.stack)
   			} else {
   				console.log("Agregando corredor.");
+  				res.sendStatus(200);
   			}
 		});
 	});
@@ -175,6 +177,7 @@ const client = new Client(connectionString);
     			console.log(err.stack)
   			} else {
   				console.log("Agregando inscripcion.");
+  				res.sendStatus(200);
   			}
 		});
 	});
@@ -183,12 +186,6 @@ const client = new Client(connectionString);
 	// Socket Responses
 	io.on('connection', function(socket){
 		console.log('Se conecto un usuario.');
-
-		// socket.on('listoData', function (data) {
-  //       	client.on('notification', function(lectura) {
-  //           	socket.emit('lecturas', lectura);
-  //       	});
-  //       });
 
   		socket.emit('conectado',function(msg){
   		});
